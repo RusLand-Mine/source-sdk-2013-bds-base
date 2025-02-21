@@ -626,7 +626,12 @@ class CAchievementTFDemoman_MeleeKillWhileJumping : public CBaseTFAchievement
 		{
 			if ( m_bStickyJumping )
 			{
+#ifdef BDSBASE
+				// FIX: Stickbomb counts too!
+				if (event->GetInt("weaponid") == TF_WEAPON_BOTTLE || event->GetInt("weaponid") == TF_WEAPON_SWORD || event->GetInt("weaponid") == TF_WEAPON_STICKBOMB)
+#else
 				if ( event->GetInt( "weaponid" ) == TF_WEAPON_BOTTLE || event->GetInt( "weaponid" ) == TF_WEAPON_SWORD )
+#endif
 				{
 					IncrementCount();
 				}

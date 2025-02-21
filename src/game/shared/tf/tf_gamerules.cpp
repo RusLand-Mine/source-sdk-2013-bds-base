@@ -6108,7 +6108,12 @@ bool CTFGameRules::ApplyOnDamageModifyRules( CTakeDamageInfo &info, CBaseEntity 
 					eDamageBonusCond = TF_COND_OFFENSEBUFF;
 				}
 			}
+#ifdef BDSBASE
+			// FIX: We can't minicrit on a stickbomb
+			else if (pTFAttacker && (bitsDamage & DMG_RADIUS_MAX) && pWeapon && ((pWeapon->GetWeaponID() == TF_WEAPON_SWORD) || (pWeapon->GetWeaponID() == TF_WEAPON_BOTTLE) || (pWeapon->GetWeaponID() == TF_WEAPON_WRENCH) || (pWeapon->GetWeaponID() == TF_WEAPON_STICKBOMB)))
+#else
 			else if ( pTFAttacker && (bitsDamage & DMG_RADIUS_MAX) && pWeapon && ( (pWeapon->GetWeaponID() == TF_WEAPON_SWORD) || (pWeapon->GetWeaponID() == TF_WEAPON_BOTTLE)|| (pWeapon->GetWeaponID() == TF_WEAPON_WRENCH) ) )
+#endif
 			{
 				// First sword or bottle attack after a charge is a mini-crit.
 				bAllSeeCrit = true;
