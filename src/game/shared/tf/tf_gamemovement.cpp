@@ -1389,8 +1389,11 @@ int CTFGameMovement::CheckStuck( void )
 						m_pTFPlayer->GetNetworkIDString(),
 						m_pTFPlayer->GetTeam()->GetName(),
 						m_pTFPlayer->GetAbsOrigin().x, m_pTFPlayer->GetAbsOrigin().y, m_pTFPlayer->GetAbsOrigin().z );
-
+#ifdef BDSBASE
+					m_pTFPlayer->CommitSuicide(false, true);
+#else
 					m_pTFPlayer->TakeDamage( CTakeDamageInfo( m_pTFPlayer, m_pTFPlayer, vec3_origin, m_pTFPlayer->WorldSpaceCenter(), 999999.9f, DMG_CRUSH ) );
+#endif
 				}
 				else
 				{

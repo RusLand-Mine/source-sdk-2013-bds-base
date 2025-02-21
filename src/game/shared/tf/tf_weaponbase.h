@@ -282,6 +282,9 @@ class CTFWeaponBase : public CBaseCombatWeapon, public IHasOwner, public IHasGen
 
 	virtual void Spawn();
 	virtual void Activate( void );
+#ifdef BDSBASE
+	virtual void GiveDefaultAmmo(void);
+#endif
 	virtual void Precache();
 	virtual bool IsPredicted() const			{ return true; }
 	virtual void FallInit( void );

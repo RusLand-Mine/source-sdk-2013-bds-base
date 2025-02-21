@@ -279,7 +279,11 @@ void CTFPowerupBottle::ReapplyProvision( void )
 					// Refill weapon clips
 					for ( int i = 0; i < MAX_WEAPONS; i++ )
 					{
+#ifdef BDSBASE
+						CTFWeaponBase* pWeapon = dynamic_cast<CTFWeaponBase*>(pTFPlayer->GetWeapon(i));
+#else
 						CBaseCombatWeapon *pWeapon = pTFPlayer->GetWeapon(i);
+#endif
 						if ( !pWeapon )
 							continue;
 
@@ -297,7 +301,11 @@ void CTFPowerupBottle::ReapplyProvision( void )
 
 						if ( iShareBottle && pHealTarget )
 						{
-							CBaseCombatWeapon *pPatientWeapon = pHealTarget->GetWeapon(i);
+#ifdef BDSBASE
+							CTFWeaponBase* pPatientWeapon = dynamic_cast<CTFWeaponBase*>(pHealTarget->GetWeapon(i));
+#else
+							CBaseCombatWeapon* pPatientWeapon = pHealTarget->GetWeapon(i);
+#endif
 							if ( !pPatientWeapon )
 								continue;
 
