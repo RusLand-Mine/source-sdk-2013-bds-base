@@ -3538,7 +3538,11 @@ void CNPC_PlayerCompanion::InputClearAllOuputs( inputdata_t &inputdata )
 			typedescription_t *dataDesc = &dmap->dataDesc[i];
 			if ( ( dataDesc->fieldType == FIELD_CUSTOM ) && ( dataDesc->flags & FTYPEDESC_OUTPUT ) )
 			{
+#ifdef BDSBASE
+				CBaseEntityOutput* pOutput = (CBaseEntityOutput*)((intp)this + (int)dataDesc->fieldOffset[0]);
+#else
 				CBaseEntityOutput *pOutput = (CBaseEntityOutput *)((int)this + (int)dataDesc->fieldOffset[0]);
+#endif
 				pOutput->DeleteAllElements();
 				/*
 				int nConnections = pOutput->NumberOfElements();
