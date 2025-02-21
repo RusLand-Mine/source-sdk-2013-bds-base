@@ -5,9 +5,11 @@
 //-----------------------------------------------------------------------------
 
 $Macro SRCDIR		"..\.."
-$Macro GAMENAME 	"lostcoast"
+$Macro GAMENAME 	"lostcoast" [!$SOURCESDK]
+$Macro GAMENAME 	"mod_lostcoast" [$SOURCESDK]
 
 $Include "$SRCDIR\game\server\server_base.vpc"
+$Include "$SRCDIR\game\server\nav_mesh.vpc"
 
 $Configuration
 {
