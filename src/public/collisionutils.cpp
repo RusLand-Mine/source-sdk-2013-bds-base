@@ -1474,12 +1474,19 @@ bool IntersectRayWithOBB( const Ray_t &ray, const matrix3x4_t &matOBBToWorld,
 	Collision_ClearTrace( ray.m_Start + ray.m_StartOffset, ray.m_Delta, pTrace );
 
 	// Compute a bounding sphere around the bloated OBB
+#ifdef BDSBASE
+	Vector vecBoxExtents, vecOBBCenter;
+	VectorAdd(vecOBBMins, vecOBBMaxs, vecBoxExtents);
+	vecBoxExtents *= 0.5f;
+	VectorTransform(vecBoxExtents, matOBBToWorld, vecOBBCenter);
+#else
 	Vector vecOBBCenter;
-	VectorAdd( vecOBBMins, vecOBBMaxs, vecOBBCenter );
+	VectorAdd(vecOBBMins, vecOBBMaxs, vecOBBCenter);
 	vecOBBCenter *= 0.5f;
 	vecOBBCenter.x += matOBBToWorld[0][3];
 	vecOBBCenter.y += matOBBToWorld[1][3];
 	vecOBBCenter.z += matOBBToWorld[2][3];
+#endif
 
 	Vector vecOBBHalfDiagonal;
 	VectorSubtract( vecOBBMaxs, vecOBBMins, vecOBBHalfDiagonal );
@@ -1665,7 +1672,11 @@ bool IntersectRayWithOBB( const Ray_t &ray, const matrix3x4_t &matOBBToWorld,
 		}
 		temp.type = 3;
 
-		MatrixITransformPlane( matOBBToWorld, temp, pTrace->plane );
+#ifdef BDSBASE
+		MatrixTransformPlane(matOBBToWorld, temp, pTrace->plane);
+#else
+		MatrixITransformPlane(matOBBToWorld, temp, pTrace->plane);
+#endif
 		return true;
 	}
 
