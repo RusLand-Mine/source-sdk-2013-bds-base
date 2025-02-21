@@ -21,6 +21,7 @@ $Games
 	"PORTAL"
 	"SDK"
 	"TF"
+    //BDS PROJECTS GO HERE
 }
 
 $Include "vpc_scripts\projects.vgc"
