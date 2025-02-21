@@ -551,6 +551,17 @@ public:
 	virtual bool SetValue( HSCRIPT hScope, const char *pszKey, const ScriptVariant_t &value ) = 0;
 	bool SetValue( const char *pszKey, const ScriptVariant_t &value )																{ return SetValue(NULL, pszKey, value ); }
 
+#ifdef BDSBASE
+	// temporary objects take this path to be automatically released
+	bool SetValue(HSCRIPT hScope, const char* pszKey, ScriptVariant_t&& value)
+	{
+		bool bRet = SetValue(hScope, pszKey, value);
+		value.Free();
+		return bRet;
+	}
+	bool SetValue(const char* pszKey, ScriptVariant_t&& value) { return SetValue(NULL, pszKey, std::move(value)); }
+#endif
+
 	virtual void CreateTable( ScriptVariant_t &Table ) = 0;
 	virtual int	GetNumTableEntries( HSCRIPT hScope ) = 0;
 	virtual int GetKeyValue( HSCRIPT hScope, int nIterator, ScriptVariant_t *pKey, ScriptVariant_t *pValue ) = 0;
@@ -570,7 +581,13 @@ public:
 	{
 		ScriptVariant_t variant;
 		GetValue( hScope, pszKey, &variant );
+#ifdef BDSBASE
+		T ret = variant.Get<T>();
+		variant.Free();
+		return ret;
+#else
 		return variant.Get<T>();
+#endif
 	}
 
 	template <typename T>
@@ -1395,11 +1412,21 @@ public:
 template <>
 inline HSCRIPT IScriptVM::Get<HSCRIPT>( HSCRIPT hScope, const char *pszKey )
 {
+#ifdef BDSBASE
+	HSCRIPT ret = nullptr;
+#endif
 	ScriptVariant_t variant;
 	GetValue( hScope, pszKey, &variant );
+#ifdef BDSBASE
+	if (variant.GetType() != FIELD_VOID)
+		ret = variant.Get<HSCRIPT>();
+	variant.Free();
+	return ret;
+#else
 	if ( variant.GetType() == FIELD_VOID )
 		return NULL;
 	return variant.Get<HSCRIPT>();
+#endif
 }
 
 #include "tier0/memdbgoff.h"

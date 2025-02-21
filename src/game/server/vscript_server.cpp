@@ -1159,22 +1159,34 @@ bool ScriptSendGlobalGameEvent( const char *szName, HSCRIPT params )
 			if ( vKey.GetType() != FIELD_CSTRING )
 			{
 				Log_Msg( LOG_VScript, "VSCRIPT: ScriptSendRealGameEvent: Key must be a FIELD_CSTRING" );
+#ifndef BDSBASE
 				continue;
+#endif
 			}
-			const char *pszKeyName = (const char *)vKey;
-			switch ( vValue.GetType() )
+#ifdef BDSBASE
+			else
 			{
-				case FIELD_BOOLEAN: event->SetBool  ( pszKeyName, (bool)vValue );         break;
-				case FIELD_FLOAT:   event->SetFloat ( pszKeyName, (float)vValue );        break;
-				case FIELD_INTEGER: event->SetInt   ( pszKeyName, (int)vValue );          break;
-				case FIELD_CSTRING: event->SetString( pszKeyName, (const char *)vValue ); break;
-				case FIELD_UINT64:  event->SetUint64( pszKeyName, (uint64)vValue );       break;
-				default:
+#endif
+				const char* pszKeyName = (const char*)vKey;
+				switch (vValue.GetType())
 				{
-					Log_Msg( LOG_VScript, "VSCRIPT: ScriptSendRealGameEvent: Don't understand FIELD_TYPE of value for key %s.", pszKeyName );
-					break;
+					case FIELD_BOOLEAN: event->SetBool(pszKeyName, (bool)vValue);         break;
+					case FIELD_FLOAT:   event->SetFloat(pszKeyName, (float)vValue);        break;
+					case FIELD_INTEGER: event->SetInt(pszKeyName, (int)vValue);          break;
+					case FIELD_CSTRING: event->SetString(pszKeyName, (const char*)vValue); break;
+					case FIELD_UINT64:  event->SetUint64(pszKeyName, (uint64)vValue);       break;
+					default:
+					{
+						Log_Msg(LOG_VScript, "VSCRIPT: ScriptSendRealGameEvent: Don't understand FIELD_TYPE of value for key %s.", pszKeyName);
+						break;
+					}
 				}
+#ifdef BDSBASE
 			}
+
+			g_pScriptVM->ReleaseValue(vKey);
+			g_pScriptVM->ReleaseValue(vValue);
+#endif
 		}
 	}
 
@@ -1808,16 +1820,34 @@ static bool Script_TraceLineEx( HSCRIPT hTable )
 	CBaseEntity *pIgnoreEnt = NULL;
 	bool bNoParams = false;
 
-	if (g_pScriptVM->GetValue( hTable, "start", &rval ) )
+	if (g_pScriptVM->GetValue(hTable, "start", &rval))
+	{
 		vStart = rval;
+#ifdef BDSBASE
+		g_pScriptVM->ReleaseValue(rval);
+#endif
+	}
 	else
 		bNoParams = true;
-	if (g_pScriptVM->GetValue( hTable, "end", &rval ) )
+
+	if (g_pScriptVM->GetValue(hTable, "end", &rval))
+	{
 		vEnd = rval;
+#ifdef BDSBASE
+		g_pScriptVM->ReleaseValue(rval);
+#endif
+	}
 	else
 		bNoParams = true;
-	if (g_pScriptVM->GetValue( hTable, "mask", &rval ))
+
+	if (g_pScriptVM->GetValue(hTable, "mask", &rval))
+	{
 		mask = rval;
+#ifdef BDSBASE
+		g_pScriptVM->ReleaseValue(rval);
+#endif
+	}
+
 	if (bNoParams)
 	{
 		Warning("Didnt supply start and end to Script TraceLine call, failing, setting called to false\n");
@@ -1827,6 +1857,9 @@ static bool Script_TraceLineEx( HSCRIPT hTable )
 	if (g_pScriptVM->GetValue( hTable, "ignore", &rval ))
 	{
 		pIgnoreEnt = ToEnt((HSCRIPT)rval);
+#ifdef BDSBASE
+		g_pScriptVM->ReleaseValue(rval);
+#endif
 	}
 	trace_t tr;
 	UTIL_TraceLine( vStart, vEnd, mask, pIgnoreEnt, coll, &tr );
@@ -1847,23 +1880,43 @@ static bool Script_TraceHull( HSCRIPT hTable )
 	CBaseEntity* pIgnoreEnt = NULL;
 	bool bNoParams = false;
 
-	if (g_pScriptVM->GetValue( hTable, "start", &rval ) )
+	if (g_pScriptVM->GetValue(hTable, "start", &rval))
+	{
 		vStart = rval;
+#ifdef BDSBASE
+		g_pScriptVM->ReleaseValue(rval);
+#endif
+	}
 	else
 		bNoParams = true;
 
-	if (g_pScriptVM->GetValue( hTable, "end", &rval ) )
+	if (g_pScriptVM->GetValue(hTable, "end", &rval))
+	{
 		vEnd = rval;
+#ifdef BDSBASE
+		g_pScriptVM->ReleaseValue(rval);
+#endif
+	}
 	else
 		bNoParams = true;
 
-	if (g_pScriptVM->GetValue( hTable, "hullmin", &rval ) )
+	if (g_pScriptVM->GetValue(hTable, "hullmin", &rval))
+	{
 		vHullMin = rval;
+#ifdef BDSBASE
+		g_pScriptVM->ReleaseValue(rval);
+#endif
+	}
 	else
 		bNoParams = true;
 
-	if (g_pScriptVM->GetValue( hTable, "hullmax", &rval ) )
+	if (g_pScriptVM->GetValue(hTable, "hullmax", &rval))
+	{
 		vHullMax = rval;
+#ifdef BDSBASE
+		g_pScriptVM->ReleaseValue(rval);
+#endif
+	}
 	else
 		bNoParams = true;
 
@@ -1877,11 +1930,17 @@ static bool Script_TraceHull( HSCRIPT hTable )
 	if (g_pScriptVM->GetValue( hTable, "mask", &rval ))
 	{
 		mask = rval;
+#ifdef BDSBASE
+		g_pScriptVM->ReleaseValue(rval);
+#endif
 	}
 
 	if (g_pScriptVM->GetValue( hTable, "ignore", &rval ))
 	{
 		pIgnoreEnt = ToEnt((HSCRIPT)rval);
+#ifdef BDSBASE
+		g_pScriptVM->ReleaseValue(rval);
+#endif
 	}
 
 	trace_t tr;
