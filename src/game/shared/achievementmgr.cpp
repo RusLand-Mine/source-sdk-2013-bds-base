@@ -1087,7 +1087,12 @@ bool CAchievementMgr::CheckAchievementsEnabled()
 		return false;
 	}
 
-	ConVarRef tf_bot_offline_practice( "tf_bot_offline_practice" );
+#ifdef BDSBASE
+	static ConVarRef tf_bot_offline_practice("tf_bot_offline_practice");
+#else
+	ConVarRef tf_bot_offline_practice("tf_bot_offline_practice");
+#endif
+
 	// no achievements for offline practice
 	if ( tf_bot_offline_practice.GetInt() != 0 )
 	{

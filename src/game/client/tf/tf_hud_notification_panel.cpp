@@ -101,7 +101,11 @@ void CHudNotificationPanel::MsgFunc_HudNotify( bf_read &msg )
 	// Ignore notifications in minmode
 	if ( !bForceShow )
 	{
+#ifdef BDSBASE
+		static ConVarRef cl_hud_minmode("cl_hud_minmode", true);
+#else
 		ConVarRef cl_hud_minmode( "cl_hud_minmode", true );
+#endif
 		if ( cl_hud_minmode.IsValid() && cl_hud_minmode.GetBool() )
 			return;
 	}
@@ -140,7 +144,11 @@ void CHudNotificationPanel::MsgFunc_HudNotify( bf_read &msg )
 void CHudNotificationPanel::MsgFunc_HudNotifyCustom( bf_read &msg )
 {
 	// Ignore notifications in minmode
-	ConVarRef cl_hud_minmode( "cl_hud_minmode", true );
+#ifdef BDSBASE
+	static ConVarRef cl_hud_minmode("cl_hud_minmode", true);
+#else
+	ConVarRef cl_hud_minmode("cl_hud_minmode", true);
+#endif
 	if ( cl_hud_minmode.IsValid() && cl_hud_minmode.GetBool() )
 		return;
 
