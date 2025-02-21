@@ -1220,7 +1220,11 @@ void CTFPlayer::SetGrapplingHookTarget( CBaseEntity *pTarget, bool bShouldBleed 
 //-----------------------------------------------------------------------------
 bool CTFPlayer::CanBeForcedToLaugh( void )
 {
-	if ( TFGameRules() && TFGameRules()->IsMannVsMachineMode() && IsBot() && ( GetTeamNumber() == TF_TEAM_PVE_INVADERS ) )
+#ifdef BDSBASE
+	if (TFGameRules() && TFGameRules()->IsMannVsMachineMode() && IsBot() && (GetTeamNumber() == TF_TEAM_PVE_INVADERS) && IsMiniBoss())
+#else
+	if (TFGameRules() && TFGameRules()->IsMannVsMachineMode() && IsBot() && (GetTeamNumber() == TF_TEAM_PVE_INVADERS))
+#endif
 		return false;
 
 	return true;
