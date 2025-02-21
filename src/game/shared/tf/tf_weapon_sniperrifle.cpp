@@ -501,19 +501,34 @@ void CTFSniperRifle::ZoomOutIn( void )
 	ZoomOut();
 
 	CTFPlayer *pPlayer = GetTFPlayerOwner();
+#ifdef BDSBASE
+	float flRezoomDelay = 0.9f;
+	if (!UsesClipsForAmmo1())
+	{
+		// Since sniper rifles don't actually use clips the fast reload hook also affects unzoom and zoom delays
+		ApplyScopeSpeedModifications(flRezoomDelay);
+	}
+#endif
+
 	if ( pPlayer && pPlayer->ShouldAutoRezoom() )
 	{
+#ifndef BDSBASE
 		float flRezoomDelay = 0.9f;
 		if ( !UsesClipsForAmmo1() )
 		{
 			// Since sniper rifles don't actually use clips the fast reload hook also affects unzoom and zoom delays
 			ApplyScopeSpeedModifications( flRezoomDelay );
 		}
+#endif
 		m_flRezoomTime = gpGlobals->curtime + flRezoomDelay;
 	}
 	else
 	{
+#ifdef BDSBASE
+		m_flNextSecondaryAttack = gpGlobals->curtime + flRezoomDelay + 0.1f;
+#else
 		m_flNextSecondaryAttack = gpGlobals->curtime + 1.0f;
+#endif
 	}
 }
 
