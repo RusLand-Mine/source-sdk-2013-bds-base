@@ -243,7 +243,11 @@ ActionResult< CTFBot > CTFBotDeliverFlag::Update( CTFBot *me, float interval )
 
 		m_flTotalTravelDistance = NavAreaTravelDistance( me->GetLastKnownArea(), TheNavMesh->GetNavArea( zone->WorldSpaceCenter() ), cost );
 
+#ifdef BDSBASE
+		if ( TFGameRules()->IsMannVsMachineMode() && flOldTravelDistance != -1.0f && m_flTotalTravelDistance - flOldTravelDistance > 2000.0f )
+#else
 		if ( flOldTravelDistance != -1.0f && m_flTotalTravelDistance - flOldTravelDistance > 2000.0f )
+#endif
 		{
 			TFGameRules()->BroadcastSound( 255, "Announcer.MVM_Bomb_Reset" );
 
