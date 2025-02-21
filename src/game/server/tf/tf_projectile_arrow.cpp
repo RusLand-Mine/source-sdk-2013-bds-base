@@ -832,7 +832,11 @@ void CTFProjectile_Arrow::ArrowTouch( CBaseEntity *pOther )
 			Ray_t ray;
 			ray.Init( start, position );
 			trace_t tr;
+#ifdef BDSBASE
+			IntersectRayWithOBB(ray, position, angles, pbox->bbmin, pbox->bbmax, 0.f, &tr);
+#else
 			IntersectRayWithBox( ray, position+pbox->bbmin, position+pbox->bbmax, 0.f, &tr );
+#endif
 			float dist = tr.endpos.DistTo( start );
 
 			if ( dist < closest_dist )
