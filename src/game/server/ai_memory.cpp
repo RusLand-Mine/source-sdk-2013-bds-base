@@ -10,6 +10,12 @@
 #include "ai_memory.h"
 #include "ai_basenpc.h"
 
+#ifdef BDSBASE
+#ifdef NEXT_BOT
+#include "NextBotManager.h"
+#endif
+#endif
+
 // memdbgon must be the last include file in a .cpp file!!!
 #include "tier0/memdbgon.h"
 
@@ -245,8 +251,33 @@ bool CAI_Enemies::ShouldDiscardMemory( AI_EnemyInfo_t *pMemory )
 	if ( pEnemy )
 	{
 		CAI_BaseNPC *pEnemyNPC = pEnemy->MyNPCPointer();
+#ifdef BDSBASE
+		if (pEnemyNPC)
+		{
+			if (pEnemyNPC->GetState() == NPC_STATE_DEAD)
+			{
+				return true;
+			}
+		}
+#ifdef NEXT_BOT
+		else
+		{
+			INextBot* pEnemyNextBot = pEnemy->MyNextBotPointer();
+			if (pEnemyNextBot)
+			{
+				CBaseCombatCharacter* pEnemyNextBotBCC = pEnemyNextBot->GetEntity();
+
+				if (!pEnemyNextBotBCC->IsAlive())
+				{
+					return true;
+				}
+			}
+		}
+#endif
+#else
 		if ( pEnemyNPC && pEnemyNPC->GetState() == NPC_STATE_DEAD )
 			return true;
+#endif
 	}
 	else
 	{
