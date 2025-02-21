@@ -1218,6 +1218,10 @@ private:
 #endif
 
 public:
+#ifdef BDSBASE
+	bool m_bScattergunJump;
+#endif
+
 	float	m_flStunFade;
 	float	m_flStunEnd;
 	float	m_flStunMid;

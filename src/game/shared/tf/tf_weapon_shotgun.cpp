@@ -316,6 +316,53 @@ extern float AirBurstDamageForce( const Vector &size, float damage, float scale 
 //-----------------------------------------------------------------------------
 void CTFScatterGun::FireBullet( CTFPlayer *pPlayer )
 {
+#ifdef BDSBASE
+	if (HasKnockback())
+	{
+		// Perform some knock back.
+		CTFPlayer* pOwner = ToTFPlayer(GetPlayerOwner());
+		if (!pOwner)
+			return;
+
+		// No knockback during pre-round freeze.
+		if (TFGameRules() && (TFGameRules()->State_Get() == GR_STATE_PREROUND))
+			return;
+
+		// Knock the firer back!
+		if (!(pOwner->GetFlags() & FL_ONGROUND) && !pPlayer->m_Shared.m_bScattergunJump)
+		{
+			pPlayer->m_Shared.m_bScattergunJump = true;
+
+#ifndef CLIENT_DLL
+			pOwner->m_Shared.StunPlayer(0.3f, 1.f, TF_STUN_MOVEMENT | TF_STUN_MOVEMENT_FORWARD_ONLY);
+#endif
+
+			float flForce = AirBurstDamageForce(pOwner->WorldAlignSize(), 60, 6.f);
+
+			Vector vecForward;
+			AngleVectors(pOwner->EyeAngles(), &vecForward);
+			Vector vecForce = vecForward * -flForce;
+
+			VMatrix mtxPlayer;
+			mtxPlayer.SetupMatrixOrgAngles(pOwner->GetAbsOrigin(), pOwner->EyeAngles());
+			Vector vecAbsVelocity = pOwner->GetAbsVelocity();
+			Vector vecAbsVelocityAsPoint = vecAbsVelocity + pOwner->GetAbsOrigin();
+			Vector vecLocalVelocity = mtxPlayer.VMul4x3Transpose(vecAbsVelocityAsPoint);
+
+			vecLocalVelocity.x = -300;
+
+			vecAbsVelocityAsPoint = mtxPlayer.VMul4x3(vecLocalVelocity);
+			vecAbsVelocity = vecAbsVelocityAsPoint - pOwner->GetAbsOrigin();
+			pOwner->SetAbsVelocity(vecAbsVelocity);
+
+			// Impulse an additional bit of Z push.
+			pOwner->ApplyAbsVelocityImpulse(Vector(0, 0, 50.f));
+
+			// Slow player movement for a brief period of time.
+			pOwner->RemoveFlag(FL_ONGROUND);
+		}
+	}
+#else
 #ifndef CLIENT_DLL
 	if ( HasKnockback() )
 	{
@@ -360,6 +407,7 @@ void CTFScatterGun::FireBullet( CTFPlayer *pPlayer )
 			pOwner->RemoveFlag( FL_ONGROUND );
 		}
 	}
+#endif
 #endif
 
 	BaseClass::FireBullet( pPlayer );

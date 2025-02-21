@@ -938,7 +938,9 @@ public:
 
 	bool				m_bSuicideExplode;
 
+#ifndef BDSBASE
 	bool				m_bScattergunJump;
+#endif
 	int					m_iOldStunFlags;
 
 	bool				m_bFlipViewModels;

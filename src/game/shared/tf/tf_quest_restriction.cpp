@@ -1144,7 +1144,11 @@ protected:
 
 		int nNumJumps = pNonConstPlayer->GetGroundEntity() == NULL ? 1 : 0;
 		nNumJumps += pPlayer->m_Shared.GetAirDash();
+#ifdef BDSBASE
+		nNumJumps += pPlayer->m_Shared.m_bScattergunJump;
+#else
 		nNumJumps += pPlayer->m_bScattergunJump;
+#endif
 
 		if ( m_eJumpingState == JUMPING_STATE_IS_NOT_JUMPING )
 		{
@@ -3027,7 +3031,12 @@ bool CTFJumpStateQuestModifier::BPassesModifier( const CTFPlayer *pOwner, Invali
 #else
 	int nNumJumps = const_cast< CTFPlayer* >( pOwner )->GetGroundEntity() == NULL ? 1 : 0;
 	nNumJumps += pOwner->m_Shared.GetAirDash();
+
+#ifdef BDSBASE
+	nNumJumps += pOwner->m_Shared.m_bScattergunJump;
+#else
 	nNumJumps += pOwner->m_bScattergunJump;
+#endif
 
 	// If we want them on the ground, make sure they're on the ground
 	if ( m_nJumpCount == 0 )
