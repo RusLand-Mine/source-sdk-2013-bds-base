@@ -3097,10 +3097,24 @@ void CTFPlayerShared::ConditionThink( void )
 
 	VehicleThink();
 
+#ifdef BDSBASE
+	if (m_pOuter->GetFlags() & FL_ONGROUND)
+	{
+		if (InCond(TF_COND_PARACHUTE_ACTIVE))
+		{
+			RemoveCond(TF_COND_PARACHUTE_ACTIVE);
+}
+		if (InCond(TF_COND_PARACHUTE_DEPLOYED))
+		{
+			RemoveCond(TF_COND_PARACHUTE_DEPLOYED);
+		}
+	}
+#else
 	if ( m_pOuter->GetFlags() & FL_ONGROUND && InCond( TF_COND_PARACHUTE_ACTIVE ) )
 	{
 		RemoveCond( TF_COND_PARACHUTE_ACTIVE );
 	}
+#endif
 
 	// See if we should be pulsing our radius heal
 	PulseMedicRadiusHeal();

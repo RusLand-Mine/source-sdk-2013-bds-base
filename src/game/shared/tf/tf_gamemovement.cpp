@@ -1134,11 +1134,13 @@ void CTFGameMovement::PreventBunnyJumping()
 //-----------------------------------------------------------------------------
 void CTFGameMovement::ToggleParachute()
 {
-	if ( ( m_pTFPlayer->GetFlags() & FL_ONGROUND ) )
+#ifndef BDSBASE
+	if ((m_pTFPlayer->GetFlags() & FL_ONGROUND))
 	{
-		m_pTFPlayer->m_Shared.RemoveCond( TF_COND_PARACHUTE_DEPLOYED );
+		m_pTFPlayer->m_Shared.RemoveCond(TF_COND_PARACHUTE_DEPLOYED);
 		return;
 	}
+#endif // !BDSBASE
 
 	if ( mv->m_nOldButtons & IN_JUMP )
 		return;
@@ -1166,9 +1168,16 @@ void CTFGameMovement::ToggleParachute()
 		}
 		else
 		{
+#ifdef BDSBASE
+			bool bOnGround = (player->GetGroundEntity() != NULL);
+#endif
 			int iParachuteDisabled = 0;
 			CALL_ATTRIB_HOOK_INT_ON_OTHER( m_pTFPlayer, iParachuteDisabled, parachute_disabled );
+#ifdef BDSBASE
+			if (!bOnGround && !iParachuteDisabled && (tf_parachute_deploy_toggle_allowed.GetBool() || !m_pTFPlayer->m_Shared.InCond(TF_COND_PARACHUTE_DEPLOYED)))
+#else
 			if ( !iParachuteDisabled && ( tf_parachute_deploy_toggle_allowed.GetBool() || !m_pTFPlayer->m_Shared.InCond( TF_COND_PARACHUTE_DEPLOYED ) ) )
+#endif
 			{
 				m_pTFPlayer->m_Shared.AddCond( TF_COND_PARACHUTE_ACTIVE );
 				m_pTFPlayer->m_Shared.AddCond( TF_COND_PARACHUTE_DEPLOYED );
