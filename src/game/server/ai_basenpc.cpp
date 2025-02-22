@@ -3222,7 +3222,14 @@ void CAI_BaseNPC::UpdateEfficiency( bool bInPVS )
 				}
 			}
 			
+#ifdef BDSBASE
+			if (pCurrentSound)
+				iSound = pCurrentSound->NextSound();
+			else
+				break;
+#else
 			iSound = pCurrentSound->NextSound();
+#endif // BDSBASE
 		}
 	}
 
@@ -3409,7 +3416,14 @@ void CAI_BaseNPC::UpdateSleepState( bool bInPVS )
 							break;
 						}
 
+#ifdef BDSBASE
+						if (pCurrentSound)
+							iSound = pCurrentSound->NextSound();
+						else
+							break;
+#else
 						iSound = pCurrentSound->NextSound();
+#endif // BDSBASE
 					}
 				}
 			}

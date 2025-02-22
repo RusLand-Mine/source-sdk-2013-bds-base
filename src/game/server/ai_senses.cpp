@@ -148,7 +148,14 @@ void CAI_Senses::Listen( void )
 				m_iAudibleList = iSound;
 			}
 
+#ifdef BDSBASE
+			if (pCurrentSound)
+				iSound = pCurrentSound->NextSound();
+			else
+				break;
+#else
 			iSound = pCurrentSound->NextSound();
+#endif // BDSBASE
 		}
 	}
 	

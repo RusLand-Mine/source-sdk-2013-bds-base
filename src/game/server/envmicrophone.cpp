@@ -403,9 +403,18 @@ void CEnvMicrophone::Think(void)
 					fHearSound = true;
 				}
 			}
+
+#ifdef BDSBASE
+			nSound = pCurrentSound->NextSound();
+#endif
 		}
 
+#ifndef BDSBASE
 		nSound = pCurrentSound->NextSound();
+#else
+		else
+			break;
+#endif // !BDSBASE
 	}
 
 	if( fHearSound )
