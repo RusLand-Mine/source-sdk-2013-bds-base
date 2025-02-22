@@ -216,11 +216,19 @@ ConVar tf_arena_round_time( "tf_arena_round_time", "0", FCVAR_NOTIFY | FCVAR_REP
 ConVar tf_arena_max_streak( "tf_arena_max_streak", "3", FCVAR_NOTIFY | FCVAR_REPLICATED, "Teams will be scrambled if one team reaches this streak" );
 ConVar tf_arena_use_queue( "tf_arena_use_queue", "1", FCVAR_REPLICATED | FCVAR_NOTIFY, "Enables the spectator queue system for Arena." );
 
+#ifdef BDSBASE
+ConVar mp_teams_unbalance_limit("mp_teams_unbalance_limit", "1", FCVAR_NOTIFY | FCVAR_REPLICATED,
+					"Teams are unbalanced when one team has this many more players than the other team. (0 disables check)",
+					true, 0,	// min value
+					true, 30	// max value
+					);
+#else
 ConVar mp_teams_unbalance_limit( "mp_teams_unbalance_limit", "1", FCVAR_REPLICATED,
 					 "Teams are unbalanced when one team has this many more players than the other team. (0 disables check)",
 					 true, 0,	// min value
 					 true, 30	// max value
 					 );
+#endif
 
 ConVar mp_maxrounds( "mp_maxrounds", "0", FCVAR_REPLICATED | FCVAR_NOTIFY, "max number of rounds to play before server changes maps", true, 0, false, 0 );
 
@@ -231,7 +239,11 @@ ConVar mp_winlimit( "mp_winlimit", "0", FCVAR_REPLICATED | FCVAR_NOTIFY, "Max sc
 	);
 
 ConVar mp_disable_respawn_times( "mp_disable_respawn_times", "0", FCVAR_NOTIFY | FCVAR_REPLICATED );
+#ifdef BDSBASE
+ConVar mp_bonusroundtime("mp_bonusroundtime", "15", FCVAR_NOTIFY | FCVAR_REPLICATED, "Time after round win until round restarts", true, 5, true, 15);
+#else
 ConVar mp_bonusroundtime( "mp_bonusroundtime", "15", FCVAR_REPLICATED, "Time after round win until round restarts", true, 5, true, 15 );
+#endif
 ConVar mp_stalemate_meleeonly( "mp_stalemate_meleeonly", "0", FCVAR_REPLICATED | FCVAR_NOTIFY, "Restrict everyone to melee weapons only while in Sudden Death." );
 ConVar mp_forceautoteam( "mp_forceautoteam", "0", FCVAR_REPLICATED | FCVAR_NOTIFY, "Automatically assign players to teams when joining." );
 
@@ -245,6 +257,15 @@ ConVar mp_enableroundwaittime( "mp_enableroundwaittime", "1", FCVAR_REPLICATED, 
 ConVar mp_showcleanedupents( "mp_showcleanedupents", "0", FCVAR_CHEAT | FCVAR_DEVELOPMENTONLY, "Show entities that are removed on round respawn." );
 ConVar mp_restartround( "mp_restartround", "0", FCVAR_GAMEDLL, "If non-zero, the current round will restart in the specified number of seconds" );	
 
+#ifdef BDSBASE
+ConVar mp_stalemate_timelimit("mp_stalemate_timelimit", "240", FCVAR_NOTIFY | FCVAR_REPLICATED, "Timelimit (in seconds) of the stalemate round.");
+ConVar mp_autoteambalance("mp_autoteambalance", "1", FCVAR_NOTIFY | FCVAR_REPLICATED, "Automatically balance the teams based on mp_teams_unbalance_limit. 0 = off, 1 = forcibly switch, 2 = ask volunteers", true, 0, true, 2);
+
+ConVar mp_stalemate_enable("mp_stalemate_enable", "0", FCVAR_NOTIFY | FCVAR_REPLICATED, "Enable/Disable stalemate mode.");
+ConVar mp_match_end_at_timelimit("mp_match_end_at_timelimit", "0", FCVAR_NOTIFY | FCVAR_REPLICATED, "Allow the match to end when mp_timelimit hits instead of waiting for the end of the current round.");
+
+ConVar mp_holiday_nogifts("mp_holiday_nogifts", "0", FCVAR_NOTIFY | FCVAR_REPLICATED, "Set to 1 to prevent holiday gifts from spawning when players are killed.");
+#else
 ConVar mp_stalemate_timelimit( "mp_stalemate_timelimit", "240", FCVAR_REPLICATED, "Timelimit (in seconds) of the stalemate round." );
 ConVar mp_autoteambalance( "mp_autoteambalance", "1", FCVAR_NOTIFY, "Automatically balance the teams based on mp_teams_unbalance_limit. 0 = off, 1 = forcibly switch, 2 = ask volunteers", true, 0, true, 2 );
 
@@ -252,6 +273,7 @@ ConVar mp_stalemate_enable( "mp_stalemate_enable", "0", FCVAR_NOTIFY, "Enable/Di
 ConVar mp_match_end_at_timelimit( "mp_match_end_at_timelimit", "0", FCVAR_NOTIFY, "Allow the match to end when mp_timelimit hits instead of waiting for the end of the current round." );
 
 ConVar mp_holiday_nogifts( "mp_holiday_nogifts", "0", FCVAR_NOTIFY, "Set to 1 to prevent holiday gifts from spawning when players are killed." );
+#endif
 
 const char *m_pszRoundStateStrings[] = 
 {
