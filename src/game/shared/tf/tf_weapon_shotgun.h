@@ -114,6 +114,9 @@ public:
 	virtual void	ApplyPostHitEffects( const CTakeDamageInfo &inputInfo, CTFPlayer *pPlayer );
 	virtual void	FinishReload( void );
 	virtual bool	HasKnockback( void );
+#ifndef BDSBASE
+	virtual bool	SendWeaponAnim( int iActivity );
+#endif
 
 #ifdef GAME_DLL
 	virtual void	Equip( CBaseCombatCharacter *pOwner );
