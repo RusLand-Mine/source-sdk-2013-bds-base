@@ -1260,7 +1260,7 @@ bool CTFGameMovement::CheckJumpButton()
 
 	// Cannot jump again until the jump button has been released.
 #ifdef BDSBASE
-	if (mv->m_nOldButtons & IN_JUMP && (!sv_autobunnyhopping.GetBool()))
+	if (mv->m_nOldButtons & IN_JUMP && (!sv_autobunnyhopping.GetBool() || !bOnGround))
 #else
 	if ( mv->m_nOldButtons & IN_JUMP )
 #endif
