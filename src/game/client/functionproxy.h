@@ -65,9 +65,17 @@ public:
 
 protected:
 	void ComputeResultType( MaterialVarType_t& resultType, int& vecSize );
+#ifdef BDSBASE
+	float GetSrc1Float() const;
+	float GetSrc2Float() const;
+#endif
 
 	IMaterialVar* m_pSrc1;
 	IMaterialVar* m_pSrc2;
+#ifdef BDSBASE
+	int m_Src1VecComp;
+	int m_Src2VecComp;
+#endif
 };
 
 #endif // FUNCTIONPROXY_H
