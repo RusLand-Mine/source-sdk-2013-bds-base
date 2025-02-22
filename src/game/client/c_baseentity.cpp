@@ -6314,6 +6314,31 @@ void C_BaseEntity::RemoveFromTeleportList()
 #ifdef TF_CLIENT_DLL
 bool C_BaseEntity::ValidateEntityAttachedToPlayer( bool &bShouldRetry )
 {
+#ifdef BDSBASE
+	bShouldRetry = false;
+	C_BaseEntity* pParent = GetRootMoveParent();
+	if (pParent == this)
+		return true;
+
+	if (pParent->IsPlayer())
+	{
+		const char* pszModel = modelinfo->GetModelName(GetModel());
+		if (pszModel && pszModel[0])
+		{
+			// Disallow attaching any models to players that are used in econ.
+			if (Q_strstr(pszModel, "models/player/items"))
+				return false;
+
+			if (Q_strstr(pszModel, "models/workshop"))
+				return false;
+
+			if (Q_strstr(pszModel, "models/workshop_partner"))
+				return false;
+		}
+	}
+
+	return true;
+#else
 	bShouldRetry = false;
 	C_BaseEntity *pParent = GetRootMoveParent();
 	if ( pParent == this )
@@ -6364,6 +6389,7 @@ bool C_BaseEntity::ValidateEntityAttachedToPlayer( bool &bShouldRetry )
 	// Any entity that's not an item parented to a player is invalid.
 	// This prevents them creating some other entity to pretend to be a cosmetic item.
 	return !pParent->IsPlayer();
+#endif
 }
 #endif // TF_CLIENT_DLL
 
