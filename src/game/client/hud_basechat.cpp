@@ -792,7 +792,9 @@ void CBaseHudChat::MsgFunc_SayText( bf_read &msg )
 	CLocalPlayerFilter filter;
 	C_BaseEntity::EmitSound( filter, SOUND_FROM_LOCAL_PLAYER, "HudChat.Message" );
 
+#ifndef BDSBASE
 	Msg( "%s", szString );
+#endif
 }
 
 int CBaseHudChat::GetFilterForString( const char *pString )
@@ -852,7 +854,9 @@ void CBaseHudChat::MsgFunc_SayText2( bf_read &msg )
 		// print raw chat text
 		ChatPrintf( client, iFilter, "%s", ansiString );
 
+#ifndef BDSBASE
 		Msg( "%s\n", RemoveColorMarkup(ansiString) );
+#endif
 
 		CLocalPlayerFilter filter;
 		C_BaseEntity::EmitSound( filter, SOUND_FROM_LOCAL_PLAYER, "HudChat.Message" );
@@ -939,7 +943,9 @@ void CBaseHudChat::MsgFunc_TextMsg( bf_read &msg )
 			Q_strncat( szString, "\n", sizeof(szString), 1 );
 		}
 		Printf( CHAT_FILTER_NONE, "%s", ConvertCRtoNL( szString ) );
+#ifndef BDSBASE
 		Msg( "%s", ConvertCRtoNL( szString ) );
+#endif
 		break;
 
 	case HUD_PRINTCONSOLE:
@@ -1575,6 +1581,11 @@ void CBaseHudChatLine::Colorize( int alpha )
 			InsertColorChange( color );
 			InsertString( wText );
 
+#ifdef BDSBASE
+			// TERROR: color console echo
+			ConColorMsg(color, "%ls", wText);
+#endif
+
 			if ( pChat && pChat->GetChatHistory() )
 			{	
 				pChat->GetChatHistory()->InsertColorChange( color );
@@ -1589,6 +1600,11 @@ void CBaseHudChatLine::Colorize( int alpha )
 
 		}
 	}
+
+#ifdef BDSBASE
+	// TERROR: color console echo
+	Msg("\n");
+#endif
 
 	InvalidateLayout( true );
 }
