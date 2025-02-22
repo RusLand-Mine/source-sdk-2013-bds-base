@@ -408,7 +408,13 @@ bool CBaseEntity::KeyValue( const char *szKeyName, const char *szValue )
 		}
 
 		// Do this so inherited classes looking for 'angles' don't have to bother with 'angle'
-		return KeyValue( szKeyName, szBuf );
+#ifndef BDSBASE
+		const char* szKey = szKeyName;
+#else
+		const char* szKey = "angles";
+#endif
+
+		return KeyValue(szKey, szBuf );
 	}
 
 	// NOTE: Have to do these separate because they set two values instead of one
