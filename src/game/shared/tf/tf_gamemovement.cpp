@@ -57,6 +57,11 @@ ConVar  tf_parachute_maxspeed_onfire_z( "tf_parachute_maxspeed_onfire_z", "10.0f
 ConVar  tf_parachute_aircontrol( "tf_parachute_aircontrol", "2.5f", FCVAR_DEVELOPMENTONLY | FCVAR_REPLICATED, "Multiplier for how much air control players have when Parachute is deployed" );
 ConVar	tf_parachute_deploy_toggle_allowed( "tf_parachute_deploy_toggle_allowed", "0", FCVAR_REPLICATED | FCVAR_DEVELOPMENTONLY );
 
+#ifdef BDSBASE
+ConVar 	sv_enablebunnyhopping("sv_enablebunnyhopping", "0", FCVAR_REPLICATED | FCVAR_NOTIFY, "Removes speed cap from bunnyhopping.");
+ConVar 	sv_autobunnyhopping("sv_autobunnyhopping", "0", FCVAR_REPLICATED | FCVAR_NOTIFY, "Players will automatically jump while holding space.");
+#endif
+
 ConVar  tf_halloween_kart_aircontrol( "tf_halloween_kart_aircontrol", "1.2f", FCVAR_CHEAT | FCVAR_REPLICATED, "Multiplier for how much air control players have when in Kart Mode" );
 ConVar	tf_ghost_up_speed( "tf_ghost_up_speed", "300.f", FCVAR_CHEAT | FCVAR_REPLICATED, "Speed that ghost go upward while holding jump key" );
 ConVar	tf_ghost_xy_speed( "tf_ghost_xy_speed", "300.f", FCVAR_CHEAT | FCVAR_REPLICATED );
@@ -1102,6 +1107,11 @@ void CTFGameMovement::PreventBunnyJumping()
 	if ( m_pTFPlayer->m_Shared.InCond( TF_COND_HALLOWEEN_KART ) )
 		return;
 
+#ifdef BDSBASE
+	if (sv_enablebunnyhopping.GetBool())
+		return;
+#endif
+
 	// Speed at which bunny jumping is limited
 	float maxscaledspeed = BUNNYJUMP_MAX_SPEED_FACTOR * player->m_flMaxspeed;
 	if ( maxscaledspeed <= 0.0f )
@@ -1231,7 +1241,11 @@ bool CTFGameMovement::CheckJumpButton()
 	ToggleParachute();
 
 	// Cannot jump will ducked.
+#ifdef BDSBASE
+	if (player->GetFlags() & FL_DUCKING && !sv_autobunnyhopping.GetBool())
+#else
 	if ( player->GetFlags() & FL_DUCKING )
+#endif
 	{
 		// Let a scout do it.
 		bool bAllow = ( bScout && !bOnGround );
@@ -1245,7 +1259,11 @@ bool CTFGameMovement::CheckJumpButton()
 		return false;
 
 	// Cannot jump again until the jump button has been released.
+#ifdef BDSBASE
+	if (mv->m_nOldButtons & IN_JUMP && (!sv_autobunnyhopping.GetBool()))
+#else
 	if ( mv->m_nOldButtons & IN_JUMP )
+#endif
 		return false;
 
 	// In air, so ignore jumps 
