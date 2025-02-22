@@ -1458,7 +1458,9 @@ void CWeaponRPG::Precache( void )
 	PrecacheScriptSound( "Missile.Accelerate" );
 
 	// Laser dot...
+#ifndef BDSBASE
 	PrecacheModel( "sprites/redglow1.vmt" );
+#endif
 	PrecacheModel( RPG_LASER_SPRITE );
 	PrecacheModel( RPG_BEAM_SPRITE );
 
