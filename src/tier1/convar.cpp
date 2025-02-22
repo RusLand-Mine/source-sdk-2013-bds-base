@@ -360,7 +360,11 @@ CCommand::CCommand( int nArgC, const char **ppArgV )
 		{
 			*pSBuf++ = '\"';
 		}
+#ifdef BDSBASE
+		memcpy(pSBuf, ppArgV[i], nLen + 1);
+#else
 		memcpy( pSBuf, ppArgV[i], nLen );
+#endif
 		pSBuf += nLen;
 		if ( bContainsSpace )
 		{
