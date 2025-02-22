@@ -132,7 +132,9 @@ void CWeapon_SLAM::Precache( void )
 	UTIL_PrecacheOther( "npc_satchel" );
 #endif
 
+#ifndef BDSBASE
 	PrecacheScriptSound( "Weapon_SLAM.TripMineMode" );
+#endif
 	PrecacheScriptSound( "Weapon_SLAM.SatchelDetonate" );
 	PrecacheScriptSound( "Weapon_SLAM.SatchelThrow" );
 }
@@ -176,6 +178,9 @@ void CWeapon_SLAM::SlamTouch( CBaseEntity *pOther )
 bool CWeapon_SLAM::Holster( CBaseCombatWeapon *pSwitchingTo )
 {
 	SetThink(NULL);
+#ifdef BDSBASE
+	m_bAttachTripmine = false;
+#endif
 	return BaseClass::Holster(pSwitchingTo);
 }
 
@@ -231,10 +236,14 @@ void CWeapon_SLAM::PrimaryAttack( void )
 	switch (m_tSlamState)
 	{
 		case SLAM_TRIPMINE_READY:
+#ifdef BDSBASE
+			StartTripmineAttach();
+#else
 			if (CanAttachSLAM())
 			{
 				StartTripmineAttach();
 			}
+#endif
 			break;
 		case SLAM_SATCHEL_THROW:
 			StartSatchelThrow();
@@ -323,16 +332,25 @@ bool CWeapon_SLAM::AnyUndetonatedCharges(void)
 void CWeapon_SLAM::StartSatchelDetonate()
 {
 
+#ifdef BDSBASE
+	if (GetActivity() != ACT_SLAM_STICKWALL_IDLE && GetActivity() != ACT_SLAM_DETONATOR_IDLE && GetActivity() != ACT_SLAM_THROW_IDLE )
+#else
 	if ( GetActivity() != ACT_SLAM_DETONATOR_IDLE && GetActivity() != ACT_SLAM_THROW_IDLE )
-		 return;
+#endif
+		return;
 	
 	// -----------------------------------------
 	//  Play detonate animation
 	// -----------------------------------------
+#ifdef BDSBASE
+	if (m_bNeedReload || m_tSlamState == SLAM_TRIPMINE_READY)
+#else
 	if (m_bNeedReload)
+#endif
 	{
 		SendWeaponAnim(ACT_SLAM_DETONATOR_DETONATE);
 	}
+#ifndef BDSBASE
 	else if (m_tSlamState == SLAM_SATCHEL_ATTACH)
 	{
 		SendWeaponAnim(ACT_SLAM_STICKWALL_DETONATE);
@@ -341,9 +359,14 @@ void CWeapon_SLAM::StartSatchelDetonate()
 	{
 		SendWeaponAnim(ACT_SLAM_THROW_DETONATE);
 	}
+#endif
 	else
 	{
+#ifdef BDSBASE
+		SendWeaponAnim(m_tSlamState == SLAM_SATCHEL_THROW ? ACT_SLAM_THROW_DETONATE : ACT_SLAM_STICKWALL_DETONATE);
+#else
 		return;
+#endif
 	}
 	SatchelDetonate();
 
@@ -378,9 +401,13 @@ void CWeapon_SLAM::TripmineAttach( void )
 
 	trace_t tr;
 
+#ifndef BDSBASE
 	UTIL_TraceLine( vecSrc, vecSrc + (vecAiming * 128), MASK_SOLID, pOwner, COLLISION_GROUP_NONE, &tr );
 	
 	if (tr.fraction < 1.0)
+#else
+	if (CanAttachSLAM(&tr))
+#endif
 	{
 		CBaseEntity *pEntity = tr.m_pEnt;
 		if (pEntity && !(pEntity->GetFlags() & FL_CONVEYOR))
@@ -429,9 +456,13 @@ void CWeapon_SLAM::StartTripmineAttach( void )
 
 	trace_t tr;
 
-	UTIL_TraceLine( vecSrc, vecSrc + (vecAiming * 128), MASK_SOLID, pPlayer, COLLISION_GROUP_NONE, &tr );
-	
+#ifndef BDSBASE
+	UTIL_TraceLine(vecSrc, vecSrc + (vecAiming * 128), MASK_SOLID, pPlayer, COLLISION_GROUP_NONE, &tr);
+
 	if (tr.fraction < 1.0)
+#else
+	if (CanAttachSLAM(&tr))
+#endif
 	{
 		// ALERT( at_console, "hit %f\n", tr.flFraction );
 
@@ -572,9 +603,13 @@ void CWeapon_SLAM::SatchelAttach( void )
 
 	trace_t tr;
 
-	UTIL_TraceLine( vecSrc, vecSrc + (vecAiming * 128), MASK_SOLID, pOwner, COLLISION_GROUP_NONE, &tr );
-	
+#ifndef BDSBASE
+	UTIL_TraceLine(vecSrc, vecSrc + (vecAiming * 128), MASK_SOLID, pOwner, COLLISION_GROUP_NONE, &tr);
+
 	if (tr.fraction < 1.0)
+#else
+	if (CanAttachSLAM(&tr))
+#endif
 	{
 		CBaseEntity *pEntity = tr.m_pEnt;
 		if (pEntity && !(pEntity->GetFlags() & FL_CONVEYOR))
@@ -618,9 +653,13 @@ void CWeapon_SLAM::StartSatchelAttach( void )
 
 	trace_t tr;
 
-	UTIL_TraceLine( vecSrc, vecSrc + (vecAiming * 128), MASK_SOLID, pOwner, COLLISION_GROUP_NONE, &tr );
-	
+#ifndef BDSBASE
+	UTIL_TraceLine(vecSrc, vecSrc + (vecAiming * 128), MASK_SOLID, pOwner, COLLISION_GROUP_NONE, &tr);
+
 	if (tr.fraction < 1.0)
+#else
+	if (CanAttachSLAM(&tr))
+#endif
 	{
 		CBaseEntity *pEntity = tr.m_pEnt;
 		if (pEntity && !(pEntity->GetFlags() & FL_CONVEYOR))
@@ -705,7 +744,11 @@ void CWeapon_SLAM::SLAMThink( void )
 				int iAnim =	m_bDetonatorArmed ? ACT_SLAM_STICKWALL_TO_THROW : ACT_SLAM_TRIPMINE_TO_THROW_ND;
 				SendWeaponAnim( iAnim );
 				m_flWallSwitchTime = gpGlobals->curtime + SequenceDuration();
+#ifdef BDSBASE
+				m_bNeedReload = m_bAttachTripmine = false;
+#else
 				m_bNeedReload = false;
+#endif
 			}
 		}
 	}
@@ -716,7 +759,11 @@ void CWeapon_SLAM::SLAMThink( void )
 // Input  :
 // Output :
 //-----------------------------------------------------------------------------
+#ifdef BDSBASE
+bool CWeapon_SLAM::CanAttachSLAM(trace_t* pTrace)
+#else
 bool CWeapon_SLAM::CanAttachSLAM( void )
+#endif
 {
 	CHL2MP_Player *pOwner = ToHL2MPPlayer( GetOwner() );
 
@@ -751,6 +798,14 @@ bool CWeapon_SLAM::CanAttachSLAM( void )
 				return false;
 			}
 		}
+
+#ifdef BDSBASE
+		if (pTrace != NULL)
+		{
+			*pTrace = tr;
+		}
+#endif
+
 		return true;
 	}
 	else

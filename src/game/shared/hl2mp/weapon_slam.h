@@ -61,7 +61,11 @@ public:
 	void				ItemPostFrame( void );	
 	bool				Reload( void );
 	void				SetSlamState( int newState );
+#ifdef BDSBASE
+	bool				CanAttachSLAM(trace_t* = NULL);		// In position where can attach SLAM?
+#else
 	bool				CanAttachSLAM(void);		// In position where can attach SLAM?
+#endif
 	bool				AnyUndetonatedCharges(void);
 	void				StartTripmineAttach( void );
 	void				TripmineAttach( void );
