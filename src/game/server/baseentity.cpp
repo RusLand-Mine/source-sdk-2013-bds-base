@@ -3464,9 +3464,17 @@ FORCEINLINE bool NamesMatch( const char *pszQuery, string_t nameToMatch )
 		// simple ascii case conversion
 		if ( cName == cQuery )
 			;
+#ifdef BDSBASE
+		else if ((unsigned char)(cName - 'A') <= (unsigned char)('Z' - 'A') && (unsigned char)(cName - 'A' + 'a') == cQuery)
+#else
 		else if ( cName - 'A' <= (unsigned char)'Z' - 'A' && cName - 'A' + 'a' == cQuery )
+#endif
 			;
+#ifdef BDSBASE
+		else if ((unsigned char)(cName - 'a') <= (unsigned char)('z' - 'a') && (unsigned char)(cName - 'a' + 'A') == cQuery)
+#else
 		else if ( cName - 'a' <= (unsigned char)'z' - 'a' && cName - 'a' + 'A' == cQuery )
+#endif
 			;
 		else
 			break;
