@@ -15,8 +15,10 @@ $Configuration
 {
 	$Compiler
 	{
-		$AdditionalIncludeDirectories	".\hl2;.\hl2\elements;$SRCDIR\game\shared\hl2;$BASE"
-		$PreprocessorDefinitions		"$BASE;HL2_CLIENT_DLL;NEXT_BOT"
+		$AdditionalIncludeDirectories	"$BASE;.\hl2,.\hl2\elements,$SRCDIR\game\shared\hl2"
+        //HL2_LOSTCOAST only refers to a single weapon. A weapon only in lost coast, but is not a weapon we should worry about.
+        //lost coast doesn't have enough changes to warrant another modding vpc
+		$PreprocessorDefinitions		"$BASE;HL2_CLIENT_DLL;HL2_LOSTCOAST;NEXT_BOT"
 	}
 }
 

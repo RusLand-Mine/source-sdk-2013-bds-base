@@ -19,7 +19,6 @@ $Project "client"
 	"game\client\client_hl2mp.vpc"		[$HL2MP]
     "game\client\client_hl2.vpc"		[$HL2]
     "game\client\client_episodic.vpc"		[$EPISODIC]
-    "game\client\client_lostcoast.vpc"		[$LOSTCOAST]
 }
 
 $Project "fgdlib"
@@ -57,7 +56,6 @@ $Project "server"
 	"game\server\server_hl2mp.vpc"		[$HL2MP]
     "game\server\server_hl2.vpc"		[$HL2]
     "game\server\server_episodic.vpc"		[$EPISODIC]
-    "game\server\server_lostcoast.vpc"		[$LOSTCOAST]
 }
 
 $Project "launcher_main"
@@ -66,7 +64,6 @@ $Project "launcher_main"
 	"launcher_main\launcher_main_mod_tf.vpc" [$TF]
     "launcher_main\launcher_main_mod_hl2.vpc" [$HL2]
     "launcher_main\launcher_main_mod_episodic.vpc" [$EPISODIC]
-    "launcher_main\launcher_main_mod_lostcoast.vpc" [$LOSTCOAST]
 }
 
 $Project "mathlib"
