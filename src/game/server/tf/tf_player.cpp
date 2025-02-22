@@ -841,6 +841,10 @@ IMPLEMENT_SERVERCLASS_ST( CTFPlayer, DT_TFPlayer )
 	SendPropFloat( SENDINFO( m_flHelpmeButtonPressTime ) ),
 	SendPropInt( SENDINFO( m_iCampaignMedals ) ),
 	SendPropInt( SENDINFO( m_iPlayerSkinOverride ) ),
+#ifdef BDSBASE
+	SendPropInt(SENDINFO(m_nRestrictAchievements), 2, SPROP_UNSIGNED),
+	SendPropInt(SENDINFO(m_nRestrictQuests), 2, SPROP_UNSIGNED),
+#endif
 	SendPropBool( SENDINFO( m_bViewingCYOAPDA ) ),
 	SendPropBool( SENDINFO( m_bRegenerating ) ),
 END_SEND_TABLE()
@@ -1106,6 +1110,11 @@ CTFPlayer::CTFPlayer()
 	m_flNextScorePointForPD = -1;
 
 	m_iPlayerSkinOverride = 0;
+
+#ifdef BDSBASE
+	m_nRestrictAchievements = 0;
+	m_nRestrictQuests = 0;
+#endif
 
 	m_nPrevRoundTeamNum = TEAM_UNASSIGNED;
 	m_flLastDamageResistSoundTime = -1.f;
@@ -20255,6 +20264,14 @@ int	CTFPlayer::CalculateTeamBalanceScore( void )
 //-----------------------------------------------------------------------------
 void CTFPlayer::AwardAchievement( int iAchievement, int iCount )
 {
+#ifdef BDSBASE
+	// when set to 2, this netprop prevents its player from earning any achievements
+	if (m_nRestrictAchievements == 2)
+	{
+		return;
+	}
+#endif
+
 	if ( TFGameRules()->State_Get() >= GR_STATE_TEAM_WIN )
 	{
 		// allow the Helltower loot island achievement during the bonus time
