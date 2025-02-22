@@ -314,7 +314,9 @@ static void RagdollCreateObjects( IPhysicsEnvironment *pPhysEnv, ragdoll_t &ragd
 
 void RagdollSetupCollisions( ragdoll_t &ragdoll, vcollide_t *pCollide, int modelIndex )
 {
+#ifndef BDSBASE
 	Assert(pCollide);
+#endif
 	if (!pCollide)
 		return;
 
