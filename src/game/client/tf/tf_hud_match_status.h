@@ -132,7 +132,11 @@ private:
 
 	vgui::HFont					m_hPlayerListFont;
 
+#ifdef BDSBASE
+	char m_bUseMatchHUD;
+#else
 	bool m_bUseMatchHUD;
+#endif
 };
 
 #endif	// TF_HUD_MATCH_STATUS_H
