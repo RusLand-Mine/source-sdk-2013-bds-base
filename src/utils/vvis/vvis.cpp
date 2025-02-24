@@ -1167,7 +1167,11 @@ int RunVVis( int argc, char **argv )
 	}
 	else
 	{
+#ifdef BDSBASE
+        V_sprintf_safe ( portalfile, "%s%s", inbase, argv[i] );
+#else
 		sprintf ( portalfile, "%s%s", inbase, argv[i] );
+#endif
 		Q_StripExtension( portalfile, portalfile, sizeof( portalfile ) );
 	}
 	strcat (portalfile, ".prt");
