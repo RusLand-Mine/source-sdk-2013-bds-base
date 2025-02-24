@@ -228,6 +228,10 @@ public:
 	CUtlString m_name;
 	CUtlString m_waitForAllSpawned;
 	CUtlString m_waitForAllDead;
+#ifdef BDSBASE
+	CUtlString m_spawnUntilAllSpawned;
+	CUtlString m_spawnUntilAllDead;
+#endif
 
 	bool IsDone( void ) const
 	{
@@ -247,6 +251,11 @@ public:
 		m_remainingCount = m_totalCount;
 		m_state = PENDING; 
 	}
+
+#ifdef BDSBASE
+	// Mark the populator finished
+	void Finish(void);
+#endif
 
 	bool IsSupportWave( void ) const { return m_bSupportWave; }
 	bool IsLimitedSupportWave( void ) const { return m_bLimitedSupport; }

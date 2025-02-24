@@ -1156,6 +1156,9 @@ CWaveSpawnPopulator::~CWaveSpawnPopulator()
 //-----------------------------------------------------------------------
 void CWaveSpawnPopulator::ForceFinish()
 {
+#ifdef BDSBASE
+	Finish();
+#else
 	if ( m_state < WAIT_FOR_ALL_DEAD )
 	{
 		SetState( WAIT_FOR_ALL_DEAD );
@@ -1164,6 +1167,7 @@ void CWaveSpawnPopulator::ForceFinish()
 	{
 		SetState( DONE );
 	}
+#endif
 
 	FOR_EACH_VEC( m_activeVector, i )
 	{
@@ -1182,6 +1186,19 @@ void CWaveSpawnPopulator::ForceFinish()
 	m_activeVector.Purge();
 }
 
+#ifdef BDSBASE
+void CWaveSpawnPopulator::Finish(void)
+{
+	if (m_state < WAIT_FOR_ALL_DEAD)
+	{
+		SetState(WAIT_FOR_ALL_DEAD);
+	}
+	else if (m_state != WAIT_FOR_ALL_DEAD)
+	{
+		SetState(DONE);
+	}
+}
+#endif
 
 //-----------------------------------------------------------------------
 bool CWaveSpawnPopulator::Parse( KeyValues *values )
@@ -1308,6 +1325,16 @@ bool CWaveSpawnPopulator::Parse( KeyValues *values )
 		{
 			m_waitForAllDead = data->GetString();
 		}
+#ifdef BDSBASE
+		else if (!Q_stricmp(name, "SpawnUntilAllSpawned"))
+		{
+			m_spawnUntilAllSpawned = data->GetString();
+		}
+		else if (!Q_stricmp(name, "SpawnUntilAllDead"))
+		{
+			m_spawnUntilAllDead = data->GetString();
+		}
+#endif
 		else if ( !Q_stricmp( name, "Support" ) )
 		{
 			m_bLimitedSupport = !Q_stricmp( data->GetString(), "Limited" );
@@ -1411,14 +1438,22 @@ void CWaveSpawnPopulator::OnNonSupportWavesDone( void )
 			SetState( DONE );
 			break;
 		case SPAWNING:
+#ifdef BDSBASE
+			SetState(WAIT_FOR_ALL_DEAD);
+#endif
 		case WAIT_FOR_ALL_DEAD:
+#ifdef BDSBASE
+		case DONE:
+#endif
 			if ( TFGameRules() && ( m_unallocatedCurrency > 0 ) )
 			{
 				TFGameRules()->DistributeCurrencyAmount( m_unallocatedCurrency, NULL, true, true );
 				m_unallocatedCurrency = 0;
 			}
+#ifndef BDSBASE
 			SetState( WAIT_FOR_ALL_DEAD );
  		case DONE:
+#endif
 			break;
 		}
 	}
@@ -2055,6 +2090,9 @@ void CWave::ActiveWaveUpdate( void )
 	{
 		CWaveSpawnPopulator *waveSpawnPopulator = m_waveSpawnVector[i];
 		bool bWaiting = false;
+#ifdef BDSBASE
+		bool bSpawnUntilDone = true;
+#endif
 
 		// check if this WaveSpawn is waiting for another WaveSpawn to be done spawning players
 		if ( !waveSpawnPopulator->m_waitForAllSpawned.IsEmpty() )
@@ -2095,10 +2133,55 @@ void CWave::ActiveWaveUpdate( void )
 			}
 		}
 
+#ifdef BDSBASE
+		// check if this WaveSpawn is waiting for another WaveSpawn's players to all have spawned
+		if (!waveSpawnPopulator->m_spawnUntilAllSpawned.IsEmpty())
+		{
+			const char* name = waveSpawnPopulator->m_spawnUntilAllSpawned.Get();
+			FOR_EACH_VEC(m_waveSpawnVector, j)
+			{
+				CWaveSpawnPopulator* predecessor = m_waveSpawnVector[j];
+				if (predecessor && !Q_stricmp(predecessor->m_name.Get(), name))
+				{
+					if (!predecessor->IsDoneSpawningBots())
+					{
+						bSpawnUntilDone = false;
+						break;
+					}
+				}
+			}
+		}
+
+		// check if this WaveSpawn is waiting for another WaveSpawn's players to all have died
+		if (!waveSpawnPopulator->m_spawnUntilAllDead.IsEmpty())
+		{
+			const char* name = waveSpawnPopulator->m_spawnUntilAllDead.Get();
+			FOR_EACH_VEC(m_waveSpawnVector, j)
+			{
+				CWaveSpawnPopulator* predecessor = m_waveSpawnVector[j];
+				if (predecessor && !Q_stricmp(predecessor->m_name.Get(), name))
+				{
+					if (!predecessor->IsDone())
+					{
+						bSpawnUntilDone = false;
+						break;
+					}
+				}
+			}
+		}
+#endif
+
 		if ( bWaiting )
 		{
 			continue;
 		}
+
+#ifdef BDSBASE
+		if (!waveSpawnPopulator->IsDone() && bSpawnUntilDone && (!waveSpawnPopulator->m_spawnUntilAllSpawned.IsEmpty() || !waveSpawnPopulator->m_spawnUntilAllDead.IsEmpty()))
+		{
+			waveSpawnPopulator->Finish();
+		}
+#endif
 
 		waveSpawnPopulator->Update();
 
