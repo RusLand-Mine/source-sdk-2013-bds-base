@@ -97,6 +97,9 @@ class CMannVsMachineUpgrades;
 //extern ConVar tf_populator_damage_multiplier;
 
 extern ConVar tf_mvm_defenders_team_size;
+#ifdef BDSBASE
+extern ConVar tf_mvm_max_invaders;
+#endif
 
 const int kLadder_TeamSize_6v6 = 6;
 const int kLadder_TeamSize_9v9 = 9;

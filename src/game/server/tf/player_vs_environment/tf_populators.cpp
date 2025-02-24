@@ -741,7 +741,11 @@ bool CMissionPopulator::UpdateMission( CTFBot::MissionType mission )
 	// are there enough free slots?
 	int currentEnemyCount = GetGlobalTeam( TF_TEAM_PVE_INVADERS )->GetNumPlayers();
 
+#ifdef BDSBASE
+	if (currentEnemyCount + m_desiredCount > tf_mvm_max_invaders.GetInt())
+#else
 	if ( currentEnemyCount + m_desiredCount > CPopulationManager::MVM_INVADERS_TEAM_SIZE )
+#endif
 	{
 		// not enough slots yet
 		if ( tf_populator_debug.GetBool() ) 
@@ -1613,7 +1617,11 @@ void CWaveSpawnPopulator::Update( void )
 
 				int currentEnemyCount = GetGlobalTeam( TF_TEAM_PVE_INVADERS )->GetNumPlayers();
 
+#ifdef BDSBASE
+				if (currentEnemyCount + m_spawnCount + m_reservedPlayerSlotCount > tf_mvm_max_invaders.GetInt())
+#else
 				if ( currentEnemyCount + m_spawnCount + m_reservedPlayerSlotCount > CPopulationManager::MVM_INVADERS_TEAM_SIZE )
+#endif
 				{
 					// no space right now
 					return;

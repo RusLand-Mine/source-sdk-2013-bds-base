@@ -137,7 +137,9 @@ public:
 	bool IsBonusRound() const { return m_bBonusRound; }
 	CBaseCombatCharacter* GetBonusBoss() const { return m_hBonusBoss; }
 
+#ifndef BDSBASE
 	enum { MVM_INVADERS_TEAM_SIZE = 22 };
+#endif
 
 	static bool GetWavesUseReadyBetween() { return true; }
 

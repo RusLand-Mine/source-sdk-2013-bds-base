@@ -2626,7 +2626,11 @@ void CPopulationManager::AllocateBots()
 		Warning( "%d bots were already allocated some how before CPopulationManager::AllocateBots was called\n", botVector.Count() );
 	}
 
+#ifdef BDSBASE
+	for (int i = nNumEnemyBots; i < tf_mvm_max_invaders.GetInt(); ++i)
+#else
 	for ( int i = nNumEnemyBots; i < MVM_INVADERS_TEAM_SIZE; ++i )
+#endif
 	{
 		CTFBot* newBot = NextBotCreatePlayerBot< CTFBot >( "TFBot", false );
 		if ( newBot )
