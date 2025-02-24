@@ -1877,7 +1877,11 @@ private:
 	EHANDLE			m_pBlocker;
 
 	// was pev->gravity;
+#ifdef BDSBASE
+	CNetworkVar(float, m_flGravity);  // rename to m_flGravityScale;
+#else
 	float			m_flGravity;  // rename to m_flGravityScale;
+#endif
 	// was pev->friction
 	CNetworkVarForDerived( float, m_flFriction );
 	CNetworkVar( float, m_flElasticity );
