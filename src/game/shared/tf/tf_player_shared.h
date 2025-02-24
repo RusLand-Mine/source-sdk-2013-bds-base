@@ -1219,7 +1219,7 @@ private:
 
 public:
 #ifdef BDSBASE
-	bool m_bScattergunJump;
+	int m_iScattergunJump;
 #endif
 
 	float	m_flStunFade;

@@ -473,7 +473,7 @@ BEGIN_PREDICTION_DATA_NO_BASE( CTFPlayerShared )
 	DEFINE_PRED_FIELD( m_askForBallTime, FIELD_FLOAT, FTYPEDESC_INSENDTABLE ),
 	DEFINE_PRED_ARRAY( m_flItemChargeMeter, FIELD_FLOAT, LAST_LOADOUT_SLOT_WITH_CHARGE_METER, FTYPEDESC_INSENDTABLE ),
 #ifdef BDSBASE
-	DEFINE_FIELD(m_bScattergunJump, FIELD_BOOLEAN),
+	DEFINE_FIELD(m_iScattergunJump, FIELD_INTEGER, 0),
 #endif
 END_PREDICTION_DATA()
 
@@ -788,7 +788,7 @@ CTFPlayerShared::CTFPlayerShared()
 	m_flTmpDamageBonusAmount = 1.0f;
 
 #ifdef BDSBASE
-	m_bScattergunJump = false;
+	m_iScattergunJump = 0;
 #endif
 
 	m_bFeignDeathReady = false;

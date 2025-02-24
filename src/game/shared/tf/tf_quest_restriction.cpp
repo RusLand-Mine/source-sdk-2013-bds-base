@@ -1153,7 +1153,7 @@ protected:
 		int nNumJumps = pNonConstPlayer->GetGroundEntity() == NULL ? 1 : 0;
 		nNumJumps += pPlayer->m_Shared.GetAirDash();
 #ifdef BDSBASE
-		nNumJumps += pPlayer->m_Shared.m_bScattergunJump;
+		nNumJumps += pPlayer->m_Shared.m_iScattergunJump;
 #else
 		nNumJumps += pPlayer->m_bScattergunJump;
 #endif
@@ -3046,7 +3046,7 @@ bool CTFJumpStateQuestModifier::BPassesModifier( const CTFPlayer *pOwner, Invali
 	nNumJumps += pOwner->m_Shared.GetAirDash();
 
 #ifdef BDSBASE
-	nNumJumps += pOwner->m_Shared.m_bScattergunJump;
+	nNumJumps += pOwner->m_Shared.m_iScattergunJump;
 #else
 	nNumJumps += pOwner->m_bScattergunJump;
 #endif

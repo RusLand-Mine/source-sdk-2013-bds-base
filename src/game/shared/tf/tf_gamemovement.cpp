@@ -3010,7 +3010,7 @@ void CTFGameMovement::SetGroundEntity( trace_t *pm )
 #endif // GAME_DLL
 #ifdef BDSBASE
 		m_pTFPlayer->m_Shared.SetWeaponKnockbackID(-1);
-		m_pTFPlayer->m_Shared.m_bScattergunJump = false;
+		m_pTFPlayer->m_Shared.m_iScattergunJump = 0;
 #endif
 
 		m_pTFPlayer->m_Shared.SetAirDash( 0 );
