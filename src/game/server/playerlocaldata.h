@@ -88,6 +88,10 @@ public:
 	CNetworkVar( bool, m_bSlowMovement );
 
 	CNetworkString( m_szScriptOverlayMaterial, MAX_PATH );
+
+#ifdef BDSBASE
+	CNetworkArray(string_t, m_szScriptOverlayMaterialArray, MAX_SCRIPT_OVERLAYS);
+#endif
 };
 
 EXTERN_SEND_TABLE(DT_Local);

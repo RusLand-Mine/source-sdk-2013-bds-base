@@ -37,6 +37,13 @@ public:
 		m_bPrevForceLocalPlayerDraw = false;
 
 		m_szScriptOverlayMaterial.GetForModify()[0] = '\0';
+
+#ifdef BDSBASE
+		for (int i = 0; i < MAX_SCRIPT_OVERLAYS; i++)
+		{
+			m_szScriptOverlayMaterialArray.Set(i, NULL_STRING);
+		}
+#endif
 	}
 
 	unsigned char			m_chAreaBits[MAX_AREA_STATE_BYTES];				// Area visibility flags.
@@ -83,6 +90,9 @@ public:
 	bool					m_bSlowMovement;
 
 	CNetworkString( m_szScriptOverlayMaterial, MAX_PATH );
+#ifdef BDSBASE
+	CNetworkArray(string_t, m_szScriptOverlayMaterialArray, MAX_SCRIPT_OVERLAYS);
+#endif
 };
 
 #endif // C_PLAYERLOCALDATA_H
