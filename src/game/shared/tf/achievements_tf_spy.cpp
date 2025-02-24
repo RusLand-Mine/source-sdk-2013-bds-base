@@ -1324,11 +1324,22 @@ class CAchievementTFSpy_SpyBackstabEngySapBuilding : public CBaseTFAchievement
 			{
 				CBasePlayer *pEngy = UTIL_PlayerByIndex( engine->GetPlayerForUserID( event->GetInt( "ownerid" ) ) );
 
+#ifdef BDSBASE
+				if (pEngy)
+				{
+					int iIndex = FindEngyInList(pEngy);
+					if (iIndex != -1)
+					{
+						SetObjectSapped(iIndex, event->GetInt("object"));
+					}
+				}
+#else
 				int iIndex = FindEngyInList( pEngy );
 				if ( iIndex != -1 )
 				{
 					SetObjectSapped( iIndex, event->GetInt( "object" ) );
 				}
+#endif
 
 				CheckAchievementEarned(); // checks the achievement list, but also cleans out old entries (based on flTimeToBeat)
 			}
