@@ -62,8 +62,13 @@ CTFViewModel::~CTFViewModel()
 void DrawEconEntityAttachedModels( CBaseAnimating *pEnt, CEconEntity *pAttachedModelSource, const ClientModelRenderInfo_t *pInfo, int iMatchDisplayFlags );
 
 // TODO:  Turning this off by setting interp 0.0 instead of 0.1 for now since we have a timing bug to resolve
+#ifdef BDSBASE
+ConVar cl_wpn_sway_interp("cl_wpn_sway_interp", "0.0", FCVAR_CLIENTDLL | FCVAR_ARCHIVE);
+ConVar cl_wpn_sway_scale("cl_wpn_sway_scale", "5.0", FCVAR_CLIENTDLL | FCVAR_ARCHIVE);
+#else
 ConVar cl_wpn_sway_interp( "cl_wpn_sway_interp", "0.0", FCVAR_CLIENTDLL | FCVAR_CHEAT | FCVAR_DEVELOPMENTONLY );
 ConVar cl_wpn_sway_scale( "cl_wpn_sway_scale", "5.0", FCVAR_CLIENTDLL | FCVAR_CHEAT | FCVAR_DEVELOPMENTONLY );
+#endif
 #endif
 
 //-----------------------------------------------------------------------------
