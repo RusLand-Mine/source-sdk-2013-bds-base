@@ -41,6 +41,9 @@
 extern CAchievementMgr g_AchievementMgrTF;
 
 ConVar tf_mvm_tabs_discovered( "tf_mvm_tabs_discovered", "0", FCVAR_ARCHIVE, "Remember how many times players have clicked tabs." );
+#ifdef BDSBASE
+ConVar tf_mvm_sort_upgrades("tf_mvm_sort_upgrades", "1", FCVAR_NOTIFY, "Sort upgrades by price.");
+#endif
 
 Color CUpgradeBuyPanel::m_rgbaDefaultFG( 0, 0, 0, 255 );
 Color CUpgradeBuyPanel::m_rgbaDefaultBG( 0, 0, 0, 255 );
@@ -1098,6 +1101,9 @@ void CHudUpgradePanel::UpdateUpgradeButtons( void )
 			}
 
 			pItemSlotBuyPanel->upgradeBuyPanels.RemoveAll();
+#ifdef BDSBASE
+			pItemSlotBuyPanel->upgradeBuyPanels.RedoSort();	// Make sure m_bNeedsSort is false. Other methods would require modifying CUtlSortVector
+#endif
 
 			FOR_EACH_VEC( g_MannVsMachineUpgrades.m_Upgrades, i )
 			{
@@ -1158,7 +1164,18 @@ void CHudUpgradePanel::UpdateUpgradeButtons( void )
 					continue;
 				}
 
+#ifdef BDSBASE
+				if (tf_mvm_sort_upgrades.GetBool())
+				{
+					pItemSlotBuyPanel->upgradeBuyPanels.Insert(pUpgradeBuyPanel);
+				}
+				else
+				{
+					pItemSlotBuyPanel->upgradeBuyPanels.InsertNoSort(pUpgradeBuyPanel);
+				}
+#else
 				pItemSlotBuyPanel->upgradeBuyPanels.Insert( pUpgradeBuyPanel );
+#endif
 
 				float flValue = pUpgrade->flIncrement;
 				int iFormat = pAttribDef->GetDescriptionFormat();
