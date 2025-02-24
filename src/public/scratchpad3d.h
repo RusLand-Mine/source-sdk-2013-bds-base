@@ -51,7 +51,11 @@ public:
 							m_pCachedRenderData = NULL;
 						}
 
+#ifdef BDSBASE
+						virtual ~CBaseCommand()
+#else
 						~CBaseCommand()
+#endif
 						{
 							ReleaseCachedRenderData();
 						}
