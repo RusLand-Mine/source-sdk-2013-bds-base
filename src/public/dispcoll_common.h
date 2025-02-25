@@ -158,7 +158,11 @@ public:
 
 	// Creation/Destruction.
 	CDispCollTree();
+#ifdef BDSBASE
+    virtual ~CDispCollTree();
+#else
 	~CDispCollTree();
+#endif
 	virtual bool Create( CCoreDispInfo *pDisp );
 
 	// Raycasts.
