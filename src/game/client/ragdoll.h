@@ -60,6 +60,9 @@ public:
 		bool bFixedConstraints=false );
 
 	virtual void RagdollBone( C_BaseEntity *ent, mstudiobone_t *pbones, int boneCount, bool *boneSimulated, CBoneAccessor &pBoneToWorld );
+#ifdef BDSBASE
+	void    AcquireOrCopyBoneCache(matrix3x4_t* pBonesToWorld, int boneCount);
+#endif
 	virtual const Vector& GetRagdollOrigin( );
 	virtual void GetRagdollBounds( Vector &theMins, Vector &theMaxs );
 	void	BuildRagdollBounds( C_BaseEntity *ent );
@@ -101,6 +104,11 @@ private:
 	bool		m_allAsleep;
 	Vector		m_vecLastOrigin;
 	float		m_flLastOriginChangeTime;
+
+#ifdef BDSBASE
+	CUtlVector< matrix3x4_t > m_BoneCache;
+	float		m_flBoneCacheTime;
+#endif
 
 #if RAGDOLL_VISUALIZE
 	matrix3x4_t			m_savedBone1[MAXSTUDIOBONES];
