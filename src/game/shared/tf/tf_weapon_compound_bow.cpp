@@ -651,6 +651,12 @@ void CTFCompoundBow::SetArrowAlight( bool bAlight )
 	}
 }
 
+#ifdef BDSBASE
+bool CTFCompoundBow::OwnerCanJump(void)
+{
+	return GetInternalChargeBeginTime() == 0.f;
+}
+#else
 //-----------------------------------------------------------------------------
 // Purpose: 
 //-----------------------------------------------------------------------------
@@ -670,3 +676,4 @@ void CTFCompoundBow::SetInternalChargeBeginTime( float flChargeBeginTime )
 
 	BaseClass::SetInternalChargeBeginTime( flChargeBeginTime );
 }
+#endif

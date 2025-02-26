@@ -12131,6 +12131,15 @@ bool CTFPlayer::CanJump() const
 	if ( m_Shared.InCond( TF_COND_TAUNTING ) )
 		return false;
 
+#ifdef BDSBASE
+	CTFWeaponBase* pActiveWeapon = m_Shared.GetActiveTFWeapon();
+	if (pActiveWeapon)
+	{
+		if (!pActiveWeapon->OwnerCanJump())
+			return false;
+	}
+#endif
+
 	int iNoJump = 0;
 	CALL_ATTRIB_HOOK_INT( iNoJump, no_jump );
 
