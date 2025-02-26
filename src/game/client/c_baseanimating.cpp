@@ -1839,7 +1839,11 @@ void C_BaseAnimating::MaintainSequenceTransitions( IBoneSetup &boneSetup, float 
 	if ( !boneSetup.GetStudioHdr() )
 		return;
 
+#ifdef BDSBASE
+	if (prediction->InPrediction() || IsAboutToRagdoll())
+#else
 	if ( prediction->InPrediction() )
+#endif
 	{
 		m_nPrevNewSequenceParity = m_nNewSequenceParity;
 		return;
