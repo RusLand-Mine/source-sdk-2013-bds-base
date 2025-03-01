@@ -31,6 +31,18 @@ ConVar tf_show_incursion_range_max( "tf_show_incursion_range_max", "0", FCVAR_CH
 // Script access to manipulate the nav
 //--------------------------------------------------------------------------------------------------------------
 
+#ifdef BDSBASE
+BEGIN_ENT_SCRIPTDESC(CTFNavArea, CNavArea, "TF Navigation areas class")
+	DEFINE_SCRIPTFUNC(SetAttributeTF, "Set TF-specific area attributes")
+	DEFINE_SCRIPTFUNC(HasAttributeTF, "Has TF-specific area attribute bits")
+	DEFINE_SCRIPTFUNC(ClearAttributeTF, "Clear TF-specific area attribute bits")
+	DEFINE_SCRIPTFUNC(GetTravelDistanceToBombTarget, "Gets the travel distance to the MvM bomb target")
+	DEFINE_SCRIPTFUNC(IsReachableByTeam, "Is this area reachable by the given team?")
+	DEFINE_SCRIPTFUNC(IsValidForWanderingPopulation, "Returns true if area is valid for wandering population")
+	DEFINE_SCRIPTFUNC(IsTFMarked, "Is this nav area marked with the current marking scope?")
+	DEFINE_SCRIPTFUNC(TFMark, "Mark this nav area with the current marking scope.")
+END_SCRIPTDESC();
+#else
 DEFINE_SCRIPT_INSTANCE_HELPER( CTFNavArea, &g_NavAreaScriptInstanceHelper )
 
 BEGIN_ENT_SCRIPTDESC_ROOT( CTFNavArea, "Navigation areas class" )
@@ -98,6 +110,7 @@ BEGIN_ENT_SCRIPTDESC_ROOT( CTFNavArea, "Navigation areas class" )
 	DEFINE_SCRIPTFUNC( TFMark, "Mark this nav area with the current marking scope." )
 	DEFINE_SCRIPTFUNC_NAMED( ScriptComputeClosestPointInPortal, "ComputeClosestPointInPortal", "Compute closest point within the portal between to adjacent areas." )
 END_SCRIPTDESC();
+
 
 HSCRIPT CTFNavArea::GetScriptInstance()
 {
@@ -404,6 +417,7 @@ bool CTFNavArea::IsBottleneck( void ) const
 
 	return false;
 }
+#endif
 
 //------------------------------------------------------------------------------------------------
 CTFNavArea::CTFNavArea( void )
@@ -414,16 +428,20 @@ CTFNavArea::CTFNavArea( void )
 	m_distanceToBombTarget = 0.0f;
 	m_TFMark = 0;
 	m_invasionSearchMarker = (unsigned int)-1;
+#ifndef BDSBASE
 	m_hScriptInstance = NULL;
+#endif
 }
 
 CTFNavArea::~CTFNavArea( void )
 {
+#ifndef BDSBASE
 	if ( g_pScriptVM && m_hScriptInstance )
 	{
 		g_pScriptVM->RemoveInstance( m_hScriptInstance );
 		m_hScriptInstance = NULL;
 	}
+#endif
 }
 
 //------------------------------------------------------------------------------------------------

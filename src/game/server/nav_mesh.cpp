@@ -22,8 +22,10 @@
 #include "functorutils.h"
 #include "nav_pathfind.h"
 
+#ifndef BDSBASE
 #ifdef TF_DLL
 #include "tf/nav_mesh/tf_nav_area.h"
+#endif
 #endif
 
 #ifdef NEXT_BOT
@@ -3127,32 +3129,49 @@ END_SCRIPTDESC();
 //--------------------------------------------------------------------------------------------------------
 HSCRIPT CNavMesh::ScriptGetNavAreaByID( int areaID )
 {
+#ifndef BDSBASE
 #ifdef TF_DLL
-	CNavArea *area = GetNavAreaByID( areaID );
-	if ( area )
+	CNavArea* area = GetNavAreaByID(areaID);
+	if (area)
 	{
-		return ToHScript( area );
+		return ToHScript(area);
 	}
 #endif
 	return NULL;
+#else
+	CNavArea* area = GetNavAreaByID(areaID);
+	if (area)
+	{
+		return ToHScript(area);
+	}
+#endif
 }
 
 //--------------------------------------------------------------------------------------------------------
 HSCRIPT CNavMesh::ScriptGetNavArea( const Vector &pos, float beneathLimt )
 {
+#ifndef BDSBASE
 #ifdef TF_DLL
-	CNavArea *area = GetNavArea( pos, beneathLimt );
-	if ( area )
+	CNavArea* area = GetNavArea(pos, beneathLimt);
+	if (area)
 	{
-		return ToHScript( area );
+		return ToHScript(area);
 	}
 #endif
 	return NULL;
+#else
+	CNavArea* area = GetNavArea(pos, beneathLimt);
+	if (area)
+	{
+		return ToHScript(area);
+	}
+#endif
 }
 
 //--------------------------------------------------------------------------------------------------------
 HSCRIPT CNavMesh::ScriptGetNearestNavArea( const Vector &pos, float maxDist, bool checkLOS, bool checkGround )
 {
+#ifndef BDSBASE
 #ifdef TF_DLL
 	CNavArea *area = GetNearestNavArea( pos, false, maxDist, checkLOS, checkGround );
 	if ( area )
@@ -3161,6 +3180,13 @@ HSCRIPT CNavMesh::ScriptGetNearestNavArea( const Vector &pos, float maxDist, boo
 	}
 #endif
 	return NULL;
+#else
+	CNavArea* area = GetNearestNavArea(pos, false, maxDist, checkLOS, checkGround);
+	if (area)
+	{
+		return ToHScript(area);
+	}
+#endif
 }
 
 

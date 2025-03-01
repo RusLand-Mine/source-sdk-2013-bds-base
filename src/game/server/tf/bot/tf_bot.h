@@ -293,7 +293,14 @@ public:
 
 	void SetHomeArea( CTFNavArea *area );
 	CTFNavArea *GetHomeArea( void ) const;
-	void ScriptSetHomeArea( HSCRIPT hScript ) { this->SetHomeArea( ToNavArea( hScript ) ); }
+	void ScriptSetHomeArea( HSCRIPT hScript ) 
+	{ 
+#ifdef BDSBASE
+		this->SetHomeArea(ToTFNavArea(hScript));
+#else
+		this->SetHomeArea( ToNavArea( hScript ) ); 
+#endif
+	}
 	HSCRIPT ScriptGetHomeArea( void ) { return ToHScript( this->GetHomeArea() ); }
 
 	CObjectSentrygun *GetEnemySentry( void ) const;			// if we've been attacked/killed by an enemy sentry, this will return it, otherwise NULL

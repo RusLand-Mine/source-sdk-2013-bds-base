@@ -31,6 +31,25 @@ class CBaseEntityScriptInstanceHelper : public IScriptInstanceHelper
 
 extern CBaseEntityScriptInstanceHelper g_BaseEntityScriptInstanceHelper;
 
+#ifdef BDSBASE
+#ifdef USE_NAV_MESH
+class CNavAreaScriptInstanceHelper : public IScriptInstanceHelper
+{
+	bool ToString(void* p, char* pBuf, int bufSize);
+};
+
+extern CNavAreaScriptInstanceHelper g_NavAreaScriptInstanceHelper;
+#endif
+
+#ifdef NEXT_BOT
+class INextBotComponentScriptInstanceHelper : public IScriptInstanceHelper
+{
+	bool ToString(void* p, char* pBuf, int bufSize);
+};
+
+extern INextBotComponentScriptInstanceHelper g_NextBotComponentScriptInstanceHelper;
+#endif
+#else
 #ifdef TF_DLL
 class CNavAreaScriptInstanceHelper : public IScriptInstanceHelper
 {
@@ -45,6 +64,7 @@ class INextBotComponentScriptInstanceHelper : public IScriptInstanceHelper
 };
 
 extern INextBotComponentScriptInstanceHelper g_NextBotComponentScriptInstanceHelper;
+#endif
 #endif
 
 // Only allow scripts to create entities during map initialization

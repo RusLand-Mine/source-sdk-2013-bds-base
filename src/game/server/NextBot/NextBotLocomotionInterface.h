@@ -7,6 +7,22 @@
 #define _NEXT_BOT_LOCOMOTION_INTERFACE_H_
 
 #include "NextBotComponentInterface.h"
+#ifdef BDSBASE
+#ifdef USE_NAV_MESH
+#include "nav_area.h"
+#else
+
+inline HSCRIPT ToHScript(CNavArea* pArea)
+{
+	return NULL;
+}
+
+inline CNavArea* ToNavArea(HSCRIPT hScript)
+{
+	return NULL;
+}
+#endif
+#else
 #ifdef TF_DLL
 #include "tf/nav_mesh/tf_nav_area.h"
 #else
@@ -26,6 +42,7 @@ inline CNavArea *ToNavArea( HSCRIPT hScript )
 {
 	return NULL;
 }
+#endif
 #endif
 
 class Path;

@@ -734,7 +734,9 @@ public:
 	bool				IsViewingCYOAPDA( void ) const { return m_bViewingCYOAPDA; }
 	bool				IsRegenerating( void ) const { return m_bRegenerating; }
 
+#ifndef BDSBASE
 	HSCRIPT				ScriptGetActiveWeapon( void ) { return ToHScript( GetActiveTFWeapon() ); }
+#endif
 
 	void				ScriptAddCond( int nCond );
 	void				ScriptAddCondEx( int nCond, float flDuration, HSCRIPT hProvider );
@@ -809,6 +811,7 @@ public:
 		RemoveAllItems( bRemoveSuit );
 	}
 
+#ifndef BDSBASE
 	Vector	ScriptWeapon_ShootPosition();
 	bool	ScriptWeapon_CanUse( HSCRIPT hWeapon );
 	void	ScriptWeapon_Equip( HSCRIPT hWeapon );
@@ -817,8 +820,11 @@ public:
 	void	ScriptWeapon_Switch( HSCRIPT hWeapon );
 	void	ScriptWeapon_SetLast( HSCRIPT hWeapon );
 	HSCRIPT	ScriptGetLastWeapon();
+#endif
 	void ScriptEquipWearableViewModel( HSCRIPT hWearableViewModel );
+#ifndef BDSBASE
 	bool ScriptIsFakeClient() const { return this->IsFakeClient(); }
+#endif
 	int ScriptGetBotType() const { return this->GetBotType(); }
 	bool ScriptIsBotOfType(int nType) const { return this->IsBotOfType(nType); }
 
@@ -1431,10 +1437,12 @@ public:
 	HSCRIPT ScriptGetGrapplingHookTarget() const { return ToHScript( m_hGrapplingHookTarget.Get() ); }
 	void ScriptSetGrapplingHookTarget( HSCRIPT pTarget, bool bShouldBleed ) { return SetGrapplingHookTarget( ToEnt( pTarget ), bShouldBleed ); }
 
+#ifndef BDSBASE
 	void AddHudHideFlags(int flags) { m_Local.m_iHideHUD |= flags; }
 	void RemoveHudHideFlags(int flags) { m_Local.m_iHideHUD &= ~flags; }
 	void SetHudHideFlags(int flags) { m_Local.m_iHideHUD = flags; }
 	int GetHudHideFlags() { return m_Local.m_iHideHUD; }
+#endif
 
 	bool IsUsingActionSlot() const { return m_bUsingActionSlot; }
 

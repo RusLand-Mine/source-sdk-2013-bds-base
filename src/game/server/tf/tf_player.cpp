@@ -543,7 +543,9 @@ BEGIN_DATADESC( CTFPlayer )
 END_DATADESC()
 
 BEGIN_ENT_SCRIPTDESC( CTFPlayer, CBaseMultiplayerPlayer , "Team Fortress 2 Player" )
+#ifndef BDSBASE
 	DEFINE_SCRIPTFUNC_NAMED( ScriptGetActiveWeapon, "GetActiveWeapon", "Get the player's current weapon" )
+#endif
 
 	DEFINE_SCRIPTFUNC( ForceRespawn, "Force respawns the player" )
 	DEFINE_SCRIPTFUNC( ForceRegenerateAndRespawn, "Force regenerates and respawns the player" )
@@ -670,6 +672,7 @@ BEGIN_ENT_SCRIPTDESC( CTFPlayer, CBaseMultiplayerPlayer , "Team Fortress 2 Playe
 	DEFINE_SCRIPTFUNC( RemoveTeleportEffect, "" )
 	DEFINE_SCRIPTFUNC_NAMED( ScriptRemoveAllItems, "RemoveAllItems", "" )
 
+#ifndef BDSBASE
 	DEFINE_SCRIPTFUNC( UpdateSkin, "" )
 	DEFINE_SCRIPTFUNC_WRAPPED( Weapon_ShootPosition, "" ) // Needs this slim wrapper or the world falls apart on MSVC.
 	DEFINE_SCRIPTFUNC_WRAPPED( Weapon_CanUse, "" )
@@ -679,16 +682,21 @@ BEGIN_ENT_SCRIPTDESC( CTFPlayer, CBaseMultiplayerPlayer , "Team Fortress 2 Playe
 	DEFINE_SCRIPTFUNC_WRAPPED( Weapon_Switch, "" )
 	DEFINE_SCRIPTFUNC_WRAPPED( Weapon_SetLast, "" )
 	DEFINE_SCRIPTFUNC_WRAPPED( GetLastWeapon, "" )
+#endif
 	DEFINE_SCRIPTFUNC_WRAPPED( EquipWearableViewModel, "" )
 
+#ifndef BDSBASE
 	DEFINE_SCRIPTFUNC_WRAPPED( IsFakeClient, "" )
+#endif
 	DEFINE_SCRIPTFUNC_WRAPPED( GetBotType, "" )
 	DEFINE_SCRIPTFUNC_WRAPPED( IsBotOfType, "" )
 
+#ifndef BDSBASE
 	DEFINE_SCRIPTFUNC( AddHudHideFlags, "Hides a hud element based on Constants.FHideHUD." )
 	DEFINE_SCRIPTFUNC( RemoveHudHideFlags, "Unhides a hud element based on Constants.FHideHUD." )
 	DEFINE_SCRIPTFUNC( SetHudHideFlags, "Force hud hide flags to a value" )
 	DEFINE_SCRIPTFUNC( GetHudHideFlags, "Gets current hidden hud elements" )
+#endif
 
 	DEFINE_SCRIPTFUNC( IsTaunting, "" )
 	DEFINE_SCRIPTFUNC( DoTauntAttack, "" )
@@ -23054,6 +23062,7 @@ HSCRIPT	CTFPlayer::ScriptGetDisguiseTarget()
 	return ToHScript( m_Shared.GetDisguiseTarget() );
 }
 
+#ifndef BDSBASE
 Vector CTFPlayer::ScriptWeapon_ShootPosition()
 {
 	return this->Weapon_ShootPosition();
@@ -23117,6 +23126,7 @@ HSCRIPT	CTFPlayer::ScriptGetLastWeapon()
 {
 	return ToHScript(this->GetLastWeapon() );
 }
+#endif
 
 void CTFPlayer::ScriptEquipWearableViewModel( HSCRIPT hWearableViewModel )
 {

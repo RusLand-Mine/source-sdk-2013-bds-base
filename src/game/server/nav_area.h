@@ -256,6 +256,10 @@ class CNavArea : protected CNavAreaCriticalData
 public:
 	DECLARE_CLASS_NOBASE( CNavArea )
 
+#ifdef BDSBASE
+	DECLARE_ENT_SCRIPTDESC();
+#endif
+
 	CNavArea( void );
 	virtual ~CNavArea();
 	
@@ -639,6 +643,50 @@ public:
 		return true;
 	}
 
+#ifdef BDSBASE
+	//- Script access to nav functions ------------------------------------------------------------------
+	HSCRIPT GetScriptInstance();
+	bool IsBottleneck(void) const;
+	Vector FindRandomSpot(void) const;						// return a random spot in this area
+	void OnDoorCreated(CBaseEntity* door);					// invoked when a door is created
+	CBaseEntity* GetDoor(void) const;							// return a door contained in this area
+
+	int ScriptGetID(void) const { return (int)GetID(); }
+	void ScriptGetAdjacentAreas(int dir, HSCRIPT hTable);
+	HSCRIPT ScriptGetAdjacentArea(int dir, int i);
+	HSCRIPT ScriptGetRandomAdjacentArea(int dir);
+	void ScriptGetIncomingConnections(int dir, HSCRIPT hTable);
+	void ScriptAddIncomingConnection(HSCRIPT hSource, int incomingEdgeDir);
+	void ScriptConnectToArea(HSCRIPT hArea, int dir);
+	void ScriptDisconnectArea(HSCRIPT hArea);
+	bool ScriptIsConnectedArea(HSCRIPT hArea, int dir);
+	Vector ScriptGetCorner(int corner) const { return GetCorner((NavCornerType)corner); }
+	void ScriptMarkAsBlocked(int teamID);
+	int ScriptGetAdjacentCount(int dir) const { return GetAdjacentCount((NavDirType)dir); }
+	const char* ScriptGetPlaceName();
+	void ScriptSetPlaceName(const char* pszName);
+	int ScriptComputeDirection(const Vector& point) const;
+	int ScriptGetPlayerCount(int teamID) const { return GetPlayerCount(teamID); }
+	bool ScriptIsOverlapping(HSCRIPT hArea) const;
+	bool ScriptIsOverlappingOrigin(const Vector& pos, float tolerance) const { return IsOverlapping(pos, tolerance); }
+	bool ScriptIsEdge(int dir) const { return IsEdge((NavDirType)dir); }
+	bool ScriptContains(HSCRIPT hArea) const;
+	bool ScriptContainsOrigin(const Vector& pos) const { return Contains(pos); }
+	float ScriptComputeGroundHeightChange(HSCRIPT hArea);
+	HSCRIPT ScriptGetParent(void);
+	int ScriptGetParentHow(void) const { return GetParentHow(); }
+	void ScriptUnblockArea(void);
+	bool ScriptIsVisible(const Vector& eye) const { return IsVisible(eye); }
+	float ScriptGetZ(const Vector& pos) const { return GetZ(pos); }
+	bool ScriptIsCoplanar(HSCRIPT hArea) const;
+	bool ScriptIsContiguous(HSCRIPT hArea) const;
+	float ScriptComputeAdjacentConnectionHeightChange(HSCRIPT hArea) const;
+	void ScriptRemoveOrthogonalConnections(int dir);
+	HSCRIPT ScriptGetElevator(void) { return ToHScript((CBaseEntity*)GetElevator()); }
+	void ScriptGetElevatorAreas(HSCRIPT hTable);
+	HSCRIPT ScriptGetDoor(void) { return ToHScript(GetDoor()); }
+	Vector ScriptComputeClosestPointInPortal(HSCRIPT to, int dir, const Vector& fromPos) const;
+#endif
 
 private:
 	friend class CNavMesh;
@@ -757,10 +805,29 @@ private:
 	static uint32 s_nCurrVisTestCounter;
 
 	CUtlVector< CHandle< CFuncNavCost > > m_funcNavCostVector;	// active, overlapping cost entities
+
+#ifdef BDSBASE
+	EHANDLE m_hDoor;
+
+	HSCRIPT	m_hScriptInstance;
+#endif
 };
 
 typedef CUtlVector< CNavArea * > NavAreaVector;
 extern NavAreaVector TheNavAreas;
+
+#ifdef BDSBASE
+inline HSCRIPT ToHScript(CNavArea* pArea)
+{
+	return (pArea) ? pArea->GetScriptInstance() : NULL;
+}
+
+template <> ScriptClassDesc_t* GetScriptDesc<CNavArea>(CNavArea*);
+inline CNavArea* ToNavArea(HSCRIPT hScript)
+{
+	return (IsValid(hScript)) ? (CNavArea*)g_pScriptVM->GetInstanceValue(hScript, GetScriptDescForClass(CNavArea)) : NULL;
+}
+#endif
 
 
 //--------------------------------------------------------------------------------------------------------------

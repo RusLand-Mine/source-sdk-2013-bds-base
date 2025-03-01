@@ -63,6 +63,10 @@ class CTFNavArea : public CNavArea
 public:
 	DECLARE_CLASS( CTFNavArea, CNavArea );
 
+#ifdef BDSBASE
+	DECLARE_ENT_SCRIPTDESC();
+#endif
+
 	CTFNavArea( void );
 	~CTFNavArea( void );
 
@@ -129,6 +133,7 @@ public:
 	// Distance for MvM bomb delivery
 	float GetTravelDistanceToBombTarget( void ) const;
 
+#ifndef BDSBASE
 	//- Script access to nav functions ------------------------------------------------------------------
 	DECLARE_ENT_SCRIPTDESC();
 	HSCRIPT GetScriptInstance();
@@ -172,6 +177,7 @@ public:
 	void ScriptGetElevatorAreas( HSCRIPT hTable );
 	HSCRIPT ScriptGetDoor( void ) { return ToHScript( GetDoor() ); }
 	Vector ScriptComputeClosestPointInPortal( HSCRIPT to, int dir, const Vector &fromPos ) const;
+#endif
 
 private:
 	friend class CTFNavMesh;
@@ -196,11 +202,14 @@ private:
 
 	float m_distanceToBombTarget;
 
+#ifndef BDSBASE
 	EHANDLE m_hDoor;
 
 	HSCRIPT	m_hScriptInstance;
+#endif
 };
 
+#ifndef BDSBASE
 inline HSCRIPT ToHScript( CNavArea *pArea )
 {
 	CTFNavArea* pTerrorArea = ( CTFNavArea* )pArea;
@@ -217,6 +226,12 @@ inline CTFNavArea *ToNavArea( HSCRIPT hScript )
 {
 	return ( IsValid( hScript ) ) ? (CTFNavArea *)g_pScriptVM->GetInstanceValue( hScript, GetScriptDescForClass(CTFNavArea) ) : NULL;
 }
+#else
+inline CTFNavArea* ToTFNavArea(HSCRIPT hScript)
+{
+	return static_cast<CTFNavArea*>(ToNavArea(hScript));
+}
+#endif
 
 inline float CTFNavArea::GetTravelDistanceToBombTarget( void ) const
 {
